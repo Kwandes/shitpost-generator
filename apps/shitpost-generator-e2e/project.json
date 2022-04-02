@@ -1,0 +1,28 @@
+{
+  "root": "apps/shitpost-generator-e2e",
+  "sourceRoot": "apps/shitpost-generator-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/shitpost-generator-e2e/cypress.json",
+        "devServerTarget": "shitpost-generator:serve:development"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "shitpost-generator:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/shitpost-generator-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["shitpost-generator"]
+}

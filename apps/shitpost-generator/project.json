@@ -1,0 +1,96 @@
+{
+  "projectType": "application",
+  "root": "apps/shitpost-generator",
+  "sourceRoot": "apps/shitpost-generator/src",
+  "prefix": "shitpost-generator",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/shitpost-generator",
+        "index": "apps/shitpost-generator/src/index.html",
+        "main": "apps/shitpost-generator/src/main.ts",
+        "polyfills": "apps/shitpost-generator/src/polyfills.ts",
+        "tsConfig": "apps/shitpost-generator/tsconfig.app.json",
+        "assets": [
+          "apps/shitpost-generator/src/favicon.ico",
+          "apps/shitpost-generator/src/assets"
+        ],
+        "styles": ["apps/shitpost-generator/src/styles.css"],
+        "scripts": []
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/shitpost-generator/src/environments/environment.ts",
+              "with": "apps/shitpost-generator/src/environments/environment.prod.ts"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {
+          "browserTarget": "shitpost-generator:build:production"
+        },
+        "development": {
+          "browserTarget": "shitpost-generator:build:development"
+        }
+      },
+      "defaultConfiguration": "development",
+      "options": {
+        "proxyConfig": "apps/shitpost-generator/proxy.conf.json"
+      }
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "shitpost-generator:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "apps/shitpost-generator/src/**/*.ts",
+          "apps/shitpost-generator/src/**/*.html"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/shitpost-generator"],
+      "options": {
+        "jestConfig": "apps/shitpost-generator/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
