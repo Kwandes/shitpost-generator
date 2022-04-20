@@ -1,1 +1,61 @@
 /* You can add global styles to this file, and also import other style files */
+body,
+html {
+  margin: 0;
+  color: white;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+}
+
+/* ---------------- Fancy button styling ---------------- */
+.fancy-btn {
+  width: 100px;
+  height: 30px;
+  box-sizing: border-box;
+  background: none;
+  border: none;
+  outline: none;
+  color: #42d6ca;
+}
+
+.fancy-btn:hover {
+  outline: none;
+  border: 1px #42d6ca solid;
+  transition: all 0.7s ease;
+}
+
+.fancy-btn:active {
+  outline: none;
+  border: 1px purple solid;
+  transition: all 0.2s ease;
+}
+
+.fancy-btn:disabled {
+  opacity: 0.5;
+}
+
+.fancy-btn:disabled:hover,
+.fancy-btn:disabled:active {
+  border: none;
+}
+
+/* ---------------- End of fancy button styling ---------------- */
+
+/* ---------------- Fancy dropdown select styling ---------------- */
+
+.fancy-select {
+  color: #42d6ca;
+  font-size: medium;
+  width: 50%;
+  text-align: center;
+  text-transform: capitalize;
+  padding: 5px;
+  margin-bottom: 1vh;
+  background-color: rgba(128, 0, 128, 0.7);
+  border: 2px purple solid;
+  border-radius: 4px;
+}
+/* ---------------- End of fancy dropdown select styling ---------------- */

@@ -1,0 +1,99 @@
+<div *ngIf="isLoggedIn" class="wrapper">
+  <h1>You're already logged in. Log out first before you try to sign up</h1>
+  <button class="fancy-btn" style="width: 100%" routerLink="/home">
+    Go Home
+  </button>
+  <button
+    class="fancy-btn"
+    style="width: 100%"
+    *ngIf="getAccessInfo()"
+    [routerLink]="getAccessInfo()?.role === 'user' ? '/user' : '/admin'"
+  >
+    Go to my role confidential info page
+  </button>
+</div>
+
+<form
+  *ngIf="!isLoggedIn"
+  (ngSubmit)="onSubmit()"
+  name="signupForm"
+  class="wrapper"
+  [formGroup]="signupForm"
+>
+  <h1>Sign up</h1>
+  <div class="input">
+    <label for="email">E-mail</label>
+    <input
+      type="email"
+      placeholder="E-mail"
+      formControlName="email"
+      name="email"
+      id="email"
+      autocomplete="email"
+      required
+    />
+    <span
+      class="input-error"
+      *ngIf="
+        this.signupForm.get('email')?.dirty &&
+        this.signupForm.get('email')?.invalid
+      "
+      >The email must be a valid email</span
+    >
+  </div>
+
+  <div class="input">
+    <label for="password">Password</label>
+    <input
+      #password
+      type="password"
+      formControlName="password"
+      placeholder="password"
+      name="password"
+      id="password"
+      autocomplete="current-password"
+      required
+    />
+    <span
+      class="input-error"
+      *ngIf="
+        this.signupForm.get('password')?.dirty &&
+        this.signupForm.get('password')?.invalid
+      "
+      >The password must be minimum 5 characters</span
+    >
+  </div>
+
+  <select class="fancy-select" name="role" formControlName="role">
+    <option *ngFor="let role of roleArray" [value]="role" selected="">
+      {{ role }}
+    </option>
+  </select>
+
+  <button
+    type="submit"
+    id="signup-btn"
+    class="fancy-btn"
+    [disabled]="signupEnabled()"
+  >
+    Sign Up
+  </button>
+  <hr />
+  <button type="button" routerLink="/login" id="login-btn" class="fancy-btn">
+    Log In
+  </button>
+  <div
+    *ngIf="alert"
+    [ngClass]="alert.type === 'info' ? 'alert-info' : 'alert-error'"
+  >
+    {{ alert.message }}
+  </div>
+  <button
+    class="fancy-btn"
+    style="width: 100%"
+    *ngIf="getAccessInfo()"
+    [routerLink]="getAccessInfo()?.role === 'user' ? '/user' : '/admin'"
+  >
+    Go to my role confidential info page
+  </button>
+</form>

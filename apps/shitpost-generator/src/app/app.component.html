@@ -1,9 +1,8 @@
-<div style="text-align: center">
-  <h1>Welcome to shitpost-generator!</h1>
-  <img
-    width="450"
-    src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png"
-    alt="Nx - Smart, Fast and Extensible Build System"
-  />
+<div class="min-width">
+  <div class="full-page">
+    <router-outlet></router-outlet>
+    <div id="logout-btn-wrapper" *ngIf="isLoggedIn">
+      <button class="fancy-btn" (click)="logout()">Log Out</button>
+    </div>
+  </div>
 </div>
-<div>Message: {{ hello$ | async | json }}</div>
