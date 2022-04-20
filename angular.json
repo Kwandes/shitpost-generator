@@ -2,7 +2,7 @@
   "version": 2,
   "projects": {
     "api": "apps/api",
-    "api-interfaces": "libs/api-interfaces",
+    "interfaces": "libs/interfaces",
     "shitpost-generator": "apps/shitpost-generator",
     "shitpost-generator-e2e": "apps/shitpost-generator-e2e"
   }

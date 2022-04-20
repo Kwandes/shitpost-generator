@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Message } from '@shitpost-generator/api-interfaces';
+import { Message } from '@shitpost-generator/interfaces';
 
 @Component({
   selector: 'shitpost-generator-root',
