@@ -3,6 +3,7 @@
   "projects": {
     "api": "apps/api",
     "interfaces": "libs/interfaces",
+    "local-storage": "libs/local-storage",
     "shitpost-generator": "apps/shitpost-generator",
     "shitpost-generator-e2e": "apps/shitpost-generator-e2e"
   }

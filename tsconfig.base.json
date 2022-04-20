@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@shitpost-generator/interfaces": ["libs/interfaces/src/index.ts"]
+      "@shitpost-generator/interfaces": ["libs/interfaces/src/index.ts"],
+      "@shitpost-generator/local-storage": ["libs/local-storage/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
