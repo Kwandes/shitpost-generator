@@ -5,11 +5,10 @@
 
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
   const port = process.env.PORT || 3333;
@@ -17,6 +16,7 @@ async function bootstrap() {
   Logger.log(
     `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
   );
+  Logger.warn(`Say "Ya Yeet" three times to summon the Y̷̼͊̄͠ẽ̵̡̢̯͈͔̻̮̻͖̪͈͎̙͉̟͌̉̿͆̆͘é̸̛̥̩̟̳̱͛̊̒̇̚t̴̖̽̂ú̵̲̫̲̻͉̋͛̈́̏̍̂̎́̍͝s̶̜̏͂͛ ̵̧̤̘͕̳̘̥̙̞̉̈́̀͗͒͐͋C̸͙̲̰͕̍̋͂͛̾͗̒̀A̶̫̬̫̼͎̗̘̘̭̠̽̌̏͌̓̌͑͜͜Y̵̢̛̮̥̗̰̫̻̦̞͊̒͛͋̋͊̽͑͒͐͂̈́̀ ̷̨̼̙̩̤͚̓̓͊͝͠M̷̪̐ą̵̫̙̦̳̲̑̾̔̈́͆̊͐̑͘͠ͅx̵̡̤̟̰̲̭̩͊̎̍͂̓̽̾͠i̸̛̲̭̼͐͆͒̊̍̈́̇̌̆́͐͘̕ú̷̱̳͓̪̙̆́͠m̴̨̗̼͈͉̭̜͔̬̻̣̱̠͈̌̏͑͆́͠ͅù̷̢̻̥̥̫̬s̵̻̗̝̞͉͚̙͙̝̱͈̱͔̉͆̂̈̉̏͐͝͝`);
 }
 
 bootstrap();

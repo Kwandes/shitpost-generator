@@ -1,4 +1,4 @@
-import { IUser } from '@shitpost-generator/interfaces';
+import { IUser, Role } from '@shitpost-generator/interfaces';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Base } from './base.entity';
 
@@ -13,6 +13,6 @@ export class User extends Base implements IUser {
   @Column({ length: 120 })
   password: string;
 
-  @Column({ default: false })
-  isAdmin: boolean;
+  @Column({ type: 'enum', enum: Role, default: Role.admin })
+  role: Role;
 }

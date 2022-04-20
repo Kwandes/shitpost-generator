@@ -1,3 +1,5 @@
+import { Role } from './role.enum';
+
 export interface IMessage {
   message: string;
 }
@@ -7,9 +9,9 @@ export interface IBase {
   readonly updatedAt?: Date;
 }
 
-export interface IUser {
+export interface IUser extends IBase {
   userId: string;
   email: string;
   password: string;
-  isAdmin: boolean;
+  role: Role;
 }
