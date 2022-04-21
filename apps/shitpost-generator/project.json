@@ -18,7 +18,8 @@
           "apps/shitpost-generator/src/assets"
         ],
         "styles": ["apps/shitpost-generator/src/styles.css"],
-        "scripts": []
+        "scripts": [],
+        "allowedCommonJsDependencies": ["validator"]
       },
       "configurations": {
         "production": {

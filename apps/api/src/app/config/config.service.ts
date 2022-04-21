@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { Shitpost } from '../models/shitpost.entity';
 import { User } from '../models/user.entity';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -41,7 +42,7 @@ class ConfigService {
       password: this.getValue('MYSQL_PASSWORD', false) || 'root',
       database: this.getValue('MYSQL_DATABASE', false) || 'shitpost_generator',
 
-      entities: [User],
+      entities: [User, Shitpost],
     };
   }
 }
