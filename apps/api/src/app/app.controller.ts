@@ -8,10 +8,13 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
+import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import {
   IMessage,
-  ISignupRequestDto,
+  LoginRequest,
+  LoginResponse,
   Role,
+  SignupRequest,
 } from '@shitpost-generator/interfaces';
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
@@ -56,15 +59,20 @@ export class AppController {
 
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
-  async login(@Request() req) {
+  @ApiOkResponse({ type: LoginResponse })
+  async login(@Request() req, @Body() LoginRequest: LoginRequest) {
     // uses the passport library logic to obtain the user
     return this.authService.login(req.user);
   }
 
   // The role query variable could be path of the DTO but this way I get to showcase the custom enum validation pipe :)
   @Post('auth/signup')
+  @ApiOperation({
+    summary: `Create a user. Pass role query var with either 'user' or 'admin' value`,
+  })
+  @ApiOkResponse({ type: LoginResponse })
   async signup(
-    @Body() signupRequestDto: ISignupRequestDto,
+    @Body() signupRequestDto: SignupRequest,
     @Query(
       'role',
       new EnumValidationPipe(Role),

@@ -2,9 +2,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import {
-  ILoginRequestDto,
+  ILoginRequest,
   ILoginResponse,
-  ISignupRequestDto,
+  ISignupRequest,
   ISignupResponse,
   Role,
 } from '@shitpost-generator/interfaces';
@@ -35,7 +35,7 @@ export class AuthService {
    * @param params user credentials
    * @returns observable of the API request
    */
-  login(params: ILoginRequestDto): Observable<ILoginResponse> {
+  login(params: ILoginRequest): Observable<ILoginResponse> {
     const { username, password } = params;
     return this.http.post<ILoginResponse>(
       `${env.apiUrl}/api/auth/login`,
@@ -52,7 +52,7 @@ export class AuthService {
    * @param params user credentials
    * @returns observable of the API request
    */
-  register(params: ISignupRequestDto, role: Role): Observable<ISignupResponse> {
+  register(params: ISignupRequest, role: Role): Observable<ISignupResponse> {
     const { email, password } = params;
     return this.http.post<ISignupResponse>(
       `${env.apiUrl}/api/auth/signup?role=${role}`,

@@ -19,7 +19,7 @@
         ],
         "styles": ["apps/shitpost-generator/src/styles.css"],
         "scripts": [],
-        "allowedCommonJsDependencies": ["validator"]
+        "allowedCommonJsDependencies": ["validator", "@nestjs/swagger"]
       },
       "configurations": {
         "production": {

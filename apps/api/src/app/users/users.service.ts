@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ISignupRequestDto, IUser, Role } from '@shitpost-generator/interfaces';
+import { ISignupRequest, IUser, Role } from '@shitpost-generator/interfaces';
 import { Repository } from 'typeorm';
 import { User } from '../models/user.entity';
 
@@ -25,10 +25,7 @@ export class UsersService {
    * @param signupRequestDto information for user creation.
    * @returns created user.
    */
-  async create(
-    signupRequestDto: ISignupRequestDto,
-    role: Role
-  ): Promise<IUser> {
+  async create(signupRequestDto: ISignupRequest, role: Role): Promise<IUser> {
     const { email, password } = signupRequestDto;
     const newUser = this.userRepo.create({
       email: email,

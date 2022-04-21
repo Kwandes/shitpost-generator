@@ -1,6 +1,6 @@
 import { Role } from './role.enum';
 
-export interface ILoginRequestDto {
+export interface ILoginRequest {
   username: string;
   password: string;
 }
@@ -10,7 +10,7 @@ export interface ILoginResponse {
   role: Role;
 }
 
-export interface ISignupRequestDto {
+export interface ISignupRequest {
   email: string;
   password: string;
 }

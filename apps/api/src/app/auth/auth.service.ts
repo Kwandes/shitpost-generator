@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import {
   ILoginResponse,
-  ISignupRequestDto,
+  ISignupRequest,
   ISignupResponse,
   IUser,
   Role,
@@ -52,7 +52,7 @@ export class AuthService {
    * @returns access token for the registered user.
    */
   async signup(
-    signupRequestDto: ISignupRequestDto,
+    signupRequestDto: ISignupRequest,
     role: Role
   ): Promise<ISignupResponse> {
     const { email, password } = signupRequestDto;
