@@ -4,7 +4,6 @@ import {
   CreateShitpostRequest,
   ICreateShitpostResponse,
   IShitpost,
-  IUser,
   Role,
 } from '@shitpost-generator/interfaces';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -33,8 +32,8 @@ export class ShitpostsController {
   @Post('')
   create(
     @Body() createShitpostRequest: CreateShitpostRequest,
-    @AuthUser() user: IUser
+    @AuthUser() user: User
   ): Promise<ICreateShitpostResponse> {
-    return this.shitpostsService.create(createShitpostRequest, <User>user);
+    return this.shitpostsService.create(createShitpostRequest, user);
   }
 }

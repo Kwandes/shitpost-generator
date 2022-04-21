@@ -6,11 +6,13 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
+import { EntityNotFoundExceptionFilter } from './app/shared/filters/entity-not-found-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
+  app.useGlobalFilters(new EntityNotFoundExceptionFilter());
   // request body validation
   app.useGlobalPipes(
     new ValidationPipe({

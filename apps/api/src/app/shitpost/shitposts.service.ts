@@ -16,7 +16,9 @@ export class ShitpostsService {
   ) {}
 
   async findOne(shitpostId: string): Promise<Shitpost> {
-    return this.shitpostRepo.findOne({ where: { shitpostId: shitpostId } });
+    return this.shitpostRepo.findOneOrFail({
+      where: { shitpostId: shitpostId },
+    });
   }
 
   async findAll(): Promise<Shitpost[]> {
