@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   ICreateShitpostTagRequest,
@@ -63,6 +63,14 @@ export class ShitpostTagsService {
     createdBy: User = null
   ): Promise<IShitpostTag> {
     const { tag, sfw } = request;
+    if (
+      (await this.shitpostTagsRepo.findOne({ where: { tag: tag } })) !==
+      undefined
+    ) {
+      throw new BadRequestException(
+        'This tag already exists. Get more creative!'
+      );
+    }
     const newTag = this.shitpostTagsRepo.create({
       tag: tag,
       sfw: sfw,
