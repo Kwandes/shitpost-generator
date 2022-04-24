@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   ICreateShitpostRequest,
@@ -6,7 +6,7 @@ import {
   IShitpostTag,
   IUpdateShitpostRequst,
 } from '@shitpost-generator/interfaces';
-import { EntityNotFoundError, Repository } from 'typeorm';
+import { Connection, EntityNotFoundError, Repository } from 'typeorm';
 import { ShitpostTag } from '../models/shitpost-tag.entity';
 import { Shitpost } from '../models/shitpost.entity';
 import { User } from '../models/user.entity';
@@ -17,7 +17,8 @@ export class ShitpostsService {
     @InjectRepository(Shitpost)
     private readonly shitpostRepo: Repository<Shitpost>,
     @InjectRepository(ShitpostTag)
-    private readonly shitpostTagsRepo: Repository<ShitpostTag>
+    private readonly shitpostTagsRepo: Repository<ShitpostTag>,
+    private connection: Connection
   ) {}
 
   /**
@@ -48,25 +49,42 @@ export class ShitpostsService {
    */
   async update(request: IUpdateShitpostRequst, id: string): Promise<IShitpost> {
     const { text, sfw, isEnabled, tags } = request;
-    const shitpost = await this.shitpostRepo.findOneOrFail({
-      where: { shitpostId: id },
-    });
+    const queryRunner = this.connection.createQueryRunner();
 
-    if (tags) {
-      const tagList: IShitpostTag[] = [];
-      for (const tag of tags) {
-        tagList.push(
-          await this.shitpostTagsRepo.findOneOrFail({
-            where: { tagId: tag },
-          })
-        );
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      let shitpost = await this.shitpostRepo.findOneOrFail({
+        where: { shitpostId: id },
+      });
+
+      if (tags) {
+        const tagList: IShitpostTag[] = [];
+        for (const tag of tags) {
+          tagList.push(
+            await this.shitpostTagsRepo.findOneOrFail({
+              where: { tagId: tag },
+            })
+          );
+        }
+        shitpost.tags = tagList;
       }
-      shitpost.tags = tagList;
+      shitpost.text = text;
+      shitpost.sfw = sfw;
+      shitpost.isEnabled = isEnabled;
+      shitpost = await queryRunner.manager.save(shitpost);
+      await queryRunner.commitTransaction();
+      return shitpost;
+    } catch (err) {
+      // since we have errors lets rollback the changes we made
+      await queryRunner.rollbackTransaction();
+      Logger.warn(err);
+      throw err;
+      // console.warn(err);
+    } finally {
+      // you need to release a queryRunner which was manually instantiated
+      await queryRunner.release();
     }
-    shitpost.text = text;
-    shitpost.sfw = sfw;
-    shitpost.isEnabled = isEnabled;
-    return this.shitpostRepo.save(shitpost);
   }
 
   /**
@@ -81,21 +99,41 @@ export class ShitpostsService {
   ): Promise<IShitpost> {
     const { text, sfw, tags } = request;
     const tagList: IShitpostTag[] = [];
-    for (const tag of tags) {
-      tagList.push(
-        await this.shitpostTagsRepo.findOneOrFail({
-          where: { tagId: tag },
-        })
-      );
-    }
 
-    const newShitpost = this.shitpostRepo.create({
-      text: text,
-      sfw: sfw,
-      createdBy: createdBy,
-      tags: tagList,
-    });
-    return this.shitpostRepo.save(newShitpost);
+    const queryRunner = this.connection.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      for (const tag of tags) {
+        tagList.push(
+          await queryRunner.manager.findOneOrFail(ShitpostTag, {
+            where: { tagId: tag },
+          })
+        );
+      }
+
+      let newShitpost = queryRunner.manager.create(Shitpost, {
+        text: text,
+        sfw: sfw,
+        createdBy: createdBy,
+        tags: tagList,
+      });
+      newShitpost = await queryRunner.manager.save(newShitpost);
+      await queryRunner.commitTransaction();
+      return newShitpost;
+    } catch (err) {
+      // since we have errors lets rollback the changes we made
+      await queryRunner.rollbackTransaction();
+      Logger.warn(err);
+      throw err;
+      // console.warn(err);
+    } finally {
+      // you need to release a queryRunner which was manually instantiated
+      console.log('release');
+
+      await queryRunner.release();
+    }
   }
 
   /**
