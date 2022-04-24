@@ -3,9 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {
   ICreateShitpostRequest,
   IShitpost,
+  IShitpostTag,
   IUpdateShitpostRequst,
 } from '@shitpost-generator/interfaces';
 import { EntityNotFoundError, Repository } from 'typeorm';
+import { ShitpostTag } from '../models/shitpost-tag.entity';
 import { Shitpost } from '../models/shitpost.entity';
 import { User } from '../models/user.entity';
 
@@ -13,7 +15,9 @@ import { User } from '../models/user.entity';
 export class ShitpostsService {
   constructor(
     @InjectRepository(Shitpost)
-    private readonly shitpostRepo: Repository<Shitpost>
+    private readonly shitpostRepo: Repository<Shitpost>,
+    @InjectRepository(ShitpostTag)
+    private readonly shitpostTagsRepo: Repository<ShitpostTag>
   ) {}
 
   /**
@@ -22,7 +26,10 @@ export class ShitpostsService {
    * @returns entity or EntityNotFound error.
    */
   async findOne(id: string): Promise<Shitpost> {
-    return this.shitpostRepo.findOneOrFail({ where: { shitpostId: id } });
+    return this.shitpostRepo.findOneOrFail({
+      where: { shitpostId: id },
+      relations: ['tags'],
+    });
   }
 
   /**
@@ -30,7 +37,7 @@ export class ShitpostsService {
    * @returns a list of entities.
    */
   async findAll(): Promise<Shitpost[]> {
-    return this.shitpostRepo.find();
+    return this.shitpostRepo.find({ relations: ['tags'] });
   }
 
   /**
@@ -40,10 +47,22 @@ export class ShitpostsService {
    * @returns updated entity.
    */
   async update(request: IUpdateShitpostRequst, id: string): Promise<IShitpost> {
-    const { text, sfw, isEnabled } = request;
+    const { text, sfw, isEnabled, tags } = request;
     const shitpost = await this.shitpostRepo.findOneOrFail({
       where: { shitpostId: id },
     });
+
+    if (tags) {
+      const tagList: IShitpostTag[] = [];
+      for (const tag of tags) {
+        tagList.push(
+          await this.shitpostTagsRepo.findOneOrFail({
+            where: { tagId: tag },
+          })
+        );
+      }
+      shitpost.tags = tagList;
+    }
     shitpost.text = text;
     shitpost.sfw = sfw;
     shitpost.isEnabled = isEnabled;
@@ -60,11 +79,21 @@ export class ShitpostsService {
     request: ICreateShitpostRequest,
     createdBy: User = null
   ): Promise<IShitpost> {
-    const { text, sfw } = request;
+    const { text, sfw, tags } = request;
+    const tagList: IShitpostTag[] = [];
+    for (const tag of tags) {
+      tagList.push(
+        await this.shitpostTagsRepo.findOneOrFail({
+          where: { tagId: tag },
+        })
+      );
+    }
+
     const newShitpost = this.shitpostRepo.create({
       text: text,
       sfw: sfw,
       createdBy: createdBy,
+      tags: tagList,
     });
     return this.shitpostRepo.save(newShitpost);
   }

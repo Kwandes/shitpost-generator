@@ -1,5 +1,13 @@
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
+import { IShitpostTag } from './shitpost-tag.interface';
 import {
   ICreateShitpostRequest,
   IUpdateShitpostRequst,
@@ -14,6 +22,10 @@ export class CreateShitpostRequest implements ICreateShitpostRequest {
   @ApiModelProperty()
   @IsBoolean()
   sfw!: boolean;
+
+  @ApiModelProperty()
+  @IsArray()
+  tags: string[];
 }
 
 export class UpdateShitpostRequest implements IUpdateShitpostRequst {
@@ -29,4 +41,9 @@ export class UpdateShitpostRequest implements IUpdateShitpostRequst {
   @ApiModelProperty()
   @IsBoolean()
   isEnabled!: boolean;
+
+  @ApiModelProperty()
+  @IsUUID('all', { each: true })
+  @IsOptional()
+  tags?: string[];
 }

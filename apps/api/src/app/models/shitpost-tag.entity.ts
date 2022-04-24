@@ -20,7 +20,7 @@ export class ShitpostTag extends Base implements IShitpostTag {
   tagId: string;
 
   @ApiModelProperty()
-  @Column({ length: 50 })
+  @Column({ length: 50, unique: true })
   tag: string;
 
   @ApiModelProperty()

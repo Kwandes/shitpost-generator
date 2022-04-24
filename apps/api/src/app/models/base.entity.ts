@@ -5,9 +5,9 @@ import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
 export abstract class Base implements IBase {
   @ApiModelProperty()
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt?: Date;
 
   @ApiModelProperty()
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt?: Date;
 }

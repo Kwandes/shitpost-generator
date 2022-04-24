@@ -4,10 +4,13 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Base } from './base.entity';
+import { ShitpostTag } from './shitpost-tag.entity';
 import { User } from './user.entity';
 
 @Entity('shitposts')
@@ -35,4 +38,8 @@ export class Shitpost extends Base implements IShitpost {
   @ManyToOne(() => User, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'createdBy' })
   createdBy?: User;
+
+  @ManyToMany(() => ShitpostTag)
+  @JoinTable()
+  tags: ShitpostTag[];
 }
