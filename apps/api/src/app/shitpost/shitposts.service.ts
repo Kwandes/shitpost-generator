@@ -3,8 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {
   ICreateShitpostRequest,
   IShitpost,
+  IUpdateShitpostRequst,
 } from '@shitpost-generator/interfaces';
-import { Repository } from 'typeorm';
+import { EntityNotFoundError, Repository } from 'typeorm';
 import { Shitpost } from '../models/shitpost.entity';
 import { User } from '../models/user.entity';
 
@@ -15,26 +16,71 @@ export class ShitpostsService {
     private readonly shitpostRepo: Repository<Shitpost>
   ) {}
 
-  async findOne(shitpostId: string): Promise<Shitpost> {
-    return this.shitpostRepo.findOneOrFail({
-      where: { shitpostId: shitpostId },
-    });
+  /**
+   * Find a specific entry by their id.
+   * @param id id of the entity.
+   * @returns entity or EntityNotFound error.
+   */
+  async findOne(id: string): Promise<Shitpost> {
+    return this.shitpostRepo.findOneOrFail({ where: { shitpostId: id } });
   }
 
+  /**
+   * Find all entries.
+   * @returns a list of entities.
+   */
   async findAll(): Promise<Shitpost[]> {
     return this.shitpostRepo.find();
   }
 
+  /**
+   * Update the given entity.
+   * @param request new entiy information.
+   * @param id the id of the entity to update.
+   * @returns updated entity.
+   */
+  async update(request: IUpdateShitpostRequst, id: string): Promise<IShitpost> {
+    const { text, sfw, isEnabled } = request;
+    const shitpost = await this.shitpostRepo.findOneOrFail({
+      where: { shitpostId: id },
+    });
+    shitpost.text = text;
+    shitpost.sfw = sfw;
+    shitpost.isEnabled = isEnabled;
+    return this.shitpostRepo.save(shitpost);
+  }
+
+  /**
+   * Create and persist a new entity.
+   * @param request information about new entity.
+   * @param createdBy user that created the entity.
+   * @returns created entity.
+   */
   async create(
-    createShitpostRequest: ICreateShitpostRequest,
+    request: ICreateShitpostRequest,
     createdBy: User = null
   ): Promise<IShitpost> {
-    const { text, sfw } = createShitpostRequest;
+    const { text, sfw } = request;
     const newShitpost = this.shitpostRepo.create({
       text: text,
       sfw: sfw,
       createdBy: createdBy,
     });
     return this.shitpostRepo.save(newShitpost);
+  }
+
+  /**
+   * Find a specific entity by its id.
+   * @param id id of the entity.
+   * @returns entity or EntityNotFound error.
+   */
+  async perish(id: string): Promise<void> {
+    const response = await this.shitpostRepo.delete({
+      shitpostId: id,
+    });
+
+    if (response.affected === 0) {
+      throw new EntityNotFoundError(User, id);
+    }
   }
 }

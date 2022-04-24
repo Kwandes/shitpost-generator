@@ -14,5 +14,11 @@ export interface ICreateShitpostRequest {
   sfw: boolean;
 }
 
+export interface IUpdateShitpostRequst {
+  text: string;
+  sfw: boolean;
+  isEnabled: boolean;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ICreateShitpostResponse extends IShitpost {}
