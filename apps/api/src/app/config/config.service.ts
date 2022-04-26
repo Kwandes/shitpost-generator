@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { Name } from '../models/name.entity';
 import { ShitpostTag } from '../models/shitpost-tag.entity';
 import { Shitpost } from '../models/shitpost.entity';
 import { User } from '../models/user.entity';
@@ -43,7 +44,7 @@ class ConfigService {
       password: this.getValue('MYSQL_PASSWORD', false) || 'root',
       database: this.getValue('MYSQL_DATABASE', false) || 'shitpost_generator',
 
-      entities: [User, Shitpost, ShitpostTag],
+      entities: [User, Shitpost, ShitpostTag, Name],
     };
   }
 }
