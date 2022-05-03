@@ -1,4 +1,4 @@
-import { Name, Shitpost, ShitpostTag, User } from '@models';
+import { Name, NameTag, Shitpost, ShitpostTag, User } from '@models';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -36,12 +36,12 @@ class ConfigService {
       synchronize: true,
 
       host: this.getValue('MYSQL_HOST', false) || 'localhost',
-      port: parseInt(this.getValue('MYSQL_PORT', false)) || 5432,
+      port: parseInt(this.getValue('MYSQL_PORT', false)) || 3306,
       username: this.getValue('MYSQL_USER', false) || 'root',
       password: this.getValue('MYSQL_PASSWORD', false) || 'root',
       database: this.getValue('MYSQL_DATABASE', false) || 'shitpost_generator',
 
-      entities: [User, Shitpost, ShitpostTag, Name],
+      entities: [User, Shitpost, ShitpostTag, Name, NameTag],
     };
   }
 }

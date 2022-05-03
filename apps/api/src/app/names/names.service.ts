@@ -1,9 +1,10 @@
-import { Name, User } from '@models';
+import { Name, NameTag, User } from '@models';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   ICreateNameRequest,
   IName,
+  INameTag,
   IUpdateNameRequst,
 } from '@shitpost-generator/interfaces';
 import { Connection, EntityNotFoundError, Repository } from 'typeorm';
@@ -12,7 +13,9 @@ import { Connection, EntityNotFoundError, Repository } from 'typeorm';
 export class NamesService {
   constructor(
     @InjectRepository(Name)
-    private readonly namesRepo: Repository<Name>,
+    private readonly nameRepo: Repository<Name>,
+    @InjectRepository(NameTag)
+    private readonly nameTagsRepo: Repository<NameTag>,
     private connection: Connection
   ) {}
 
@@ -22,8 +25,9 @@ export class NamesService {
    * @returns entity or EntityNotFound error.
    */
   async findOne(id: string): Promise<Name> {
-    return this.namesRepo.findOneOrFail({
+    return this.nameRepo.findOneOrFail({
       where: { nameId: id },
+      relations: ['tags'],
     });
   }
 
@@ -32,7 +36,7 @@ export class NamesService {
    * @returns a list of entities.
    */
   async findAll(): Promise<Name[]> {
-    return this.namesRepo.find({ relations: ['tags'] });
+    return this.nameRepo.find({ relations: ['tags'] });
   }
 
   /**
@@ -42,16 +46,27 @@ export class NamesService {
    * @returns updated entity.
    */
   async update(request: IUpdateNameRequst, id: string): Promise<IName> {
-    const { name, gender, isEnabled } = request;
+    const { name, gender, isEnabled, tags } = request;
     const queryRunner = this.connection.createQueryRunner();
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      let nameEntity = await this.namesRepo.findOneOrFail({
+      let nameEntity = await this.nameRepo.findOneOrFail({
         where: { nameId: id },
       });
 
+      if (tags) {
+        const tagList: INameTag[] = [];
+        for (const tag of tags) {
+          tagList.push(
+            await this.nameTagsRepo.findOneOrFail({
+              where: { tagId: tag },
+            })
+          );
+        }
+        nameEntity.tags = tagList;
+      }
       nameEntity.name = name;
       nameEntity.gender = gender;
       nameEntity.isEnabled = isEnabled;
@@ -80,18 +95,27 @@ export class NamesService {
     request: ICreateNameRequest,
     createdBy: User = null
   ): Promise<IName> {
-    const { name, gender, isEnabled } = request;
+    const { name, gender, tags } = request;
+    const tagList: INameTag[] = [];
 
     const queryRunner = this.connection.createQueryRunner();
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
+      for (const tag of tags) {
+        tagList.push(
+          await queryRunner.manager.findOneOrFail(NameTag, {
+            where: { tagId: tag },
+          })
+        );
+      }
+
       let newName = queryRunner.manager.create(Name, {
         name: name,
         gender: gender,
-        isEnabled: isEnabled,
         createdBy: createdBy,
+        tags: tagList,
       });
       newName = await queryRunner.manager.save(newName);
       await queryRunner.commitTransaction();
@@ -116,7 +140,7 @@ export class NamesService {
    * @returns entity or EntityNotFound error.
    */
   async perish(id: string): Promise<void> {
-    const response = await this.namesRepo.delete({
+    const response = await this.nameRepo.delete({
       nameId: id,
     });
 

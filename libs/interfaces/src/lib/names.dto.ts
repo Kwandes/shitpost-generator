@@ -4,6 +4,7 @@ import {
   IsEnum,
   IsNotEmpty,
   IsString,
+  IsUUID,
   MaxLength,
 } from 'class-validator';
 import { Gender } from './gender.enum';
@@ -22,7 +23,11 @@ export class CreateNameRequest implements ICreateNameRequest {
 
   @ApiModelProperty()
   @IsBoolean()
-  isEnabled: boolean;
+  isEnabled!: boolean;
+
+  @ApiModelProperty()
+  @IsUUID('all', { each: true })
+  tags!: string[];
 }
 
 export class UpdateNameRequest implements IUpdateNameRequst {
@@ -38,5 +43,9 @@ export class UpdateNameRequest implements IUpdateNameRequst {
 
   @ApiModelProperty()
   @IsBoolean()
-  isEnabled: boolean;
+  isEnabled!: boolean;
+
+  @ApiModelProperty()
+  @IsUUID('all', { each: true })
+  tags!: string[];
 }

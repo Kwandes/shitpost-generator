@@ -2,6 +2,8 @@ export * from './lib/auth.dto';
 export * from './lib/auth.interfaces';
 export * from './lib/gender.enum';
 export * from './lib/interfaces';
+export * from './lib/name-tag.dto';
+export * from './lib/name-tags.interface';
 export * from './lib/names.dto';
 export * from './lib/names.interface';
 export * from './lib/role.enum';
