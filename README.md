@@ -1,98 +1,108 @@
-# ShitpostGenerator
+# Shitpost Generator
 
-This project was generated using [Nx](https://nx.dev).
+## About The Project
 
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
+Ever want to make valulable contributions on your favourite social media?\
+Do you find yourself lacking ideas for names?\
+**Look no further, this app has it all!**
 
-🔎 **Smart, Fast and Extensible Build System**
+### Built With
 
-## Quick Start & Documentation
+- [NestJs](https://nestjs.com/) - api
+- [Angular](https://angular.io/) - frontend
+- [NX](https://nx.dev/) - repository structure as a monorepo
+- [MySql](mysql.com) - data persistance
+- And love 💖
 
-[Nx Documentation](https://nx.dev/angular)
+#### Configuration
 
-[10-minute video showing all Nx features](https://nx.dev/getting-started/intro)
+The services are configured via a `.env` file, which is gitignored.\
+If you wish to connect to a database other than a locally hosted one, create a `.env` file based on the [.env.template](.env.template) and store your data there.
 
-[Interactive Tutorial](https://nx.dev/tutorial/01-create-application)
+```sh
+cp .env.template .env
+```
 
-## Adding capabilities to your workspace
+## Getting Started
 
-Nx supports many plugins which add capabilities for developing different types of applications and different tools.
+### Prerequisites
 
-These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.
+Before you can run this project, you need to have the following things installed:
 
-Below are our core plugins:
+- Npm and Node - we recommend using [NVM (Linux, MacOS)](https://github.com/nvm-sh/nvm#about) or [NVM-Windows (Windows)](https://github.com/coreybutler/nvm-windows#node-version-manager-nvm-for-windows)
 
-- [Angular](https://angular.io)
-  - `ng add @nrwl/angular`
-- [React](https://reactjs.org)
-  - `ng add @nrwl/react`
-- Web (no framework frontends)
-  - `ng add @nrwl/web`
-- [Nest](https://nestjs.com)
-  - `ng add @nrwl/nest`
-- [Express](https://expressjs.com)
-  - `ng add @nrwl/express`
-- [Node](https://nodejs.org)
-  - `ng add @nrwl/node`
+  > Use Node version `v16.14.0+`
 
-There are also many [community plugins](https://nx.dev/community) you could add.
+- nx
 
-## Generate an application
+```sh
+npm install -g nx
+```
 
-Run `ng g @nrwl/angular:app my-app` to generate an application.
+> if you don't want to install NX globally, every NX command will have to be run through npx
 
-> You can use any of the plugins above to generate applications as well.
+> We try to use the latest version of NX, but it is under active development and gets updated often. If the latest version of NX doesn't work, try an older version and submit a bug report.\
+> Current NX version used by the project can be found in the [package.json](package.json) under any of the `nrwl/` dev dependencies
 
-When using Nx, you can create multiple applications and libraries in the same workspace.
+### Installation
 
-## Generate a library
+1. Clone the repo
 
-Run `ng g @nrwl/angular:lib my-lib` to generate a library.
+```sh
+git clone https://github.com/Kwandes/shitpost-generator.git
+```
 
-> You can also use any of the plugins above to generate libraries as well.
+2. Install NPM packages
 
-Libraries are shareable across libraries and applications. They can be imported from `@shitpost-generator/mylib`.
+```sh
+npm install
+```
 
-## Development server
+3. Configure the app
 
-Run `ng serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
+Update the `.env` file if needed.
 
-## Code scaffolding
+The app requires a MySQL database instance to connect to with an existing schema `shitpost_generator`
 
-Run `ng g component my-component --project=my-app` to generate a new component.
+You can run one locally via Docker with:
 
-## Build
+```docker
+docker run --name mysql --restart unless-stopped -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=shitpost_generator -p 3306:3306 -d mysql
+```
 
-Run `ng build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+4. _[Optional]_ Populate (seed) the database with example data
 
-## Running unit tests
+```sh
+npm run seed
+```
 
-Run `ng test my-app` to execute the unit tests via [Jest](https://jestjs.io).
+5. Serve the apps
 
-Run `nx affected:test` to execute the unit tests affected by a change.
+The system is composed of multiple apps, to get access to all of the functionalty all of them need to be running.
 
-## Running end-to-end tests
+#### NX serve
 
-Run `ng e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
+You can either serve apps individually with:
 
-Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
+```sh
+nx serve api
+nx serve shitpost-generator
+```
 
-## Understand your workspace
+or serve multiple apps using:
 
-Run `nx graph` to see a diagram of the dependencies of your projects.
+```sh
+nx run-many --maxParallel 2 --parallel true --projects api, shitpost-generator --target serve
+```
 
-## Further help
+Find out more about how to use NX [here](https://nx.dev/latest/angular/getting-started/nx-cli)
 
-Visit the [Nx Documentation](https://nx.dev/angular) to learn more.
+#### Documentation
 
-## ☁ Nx Cloud
+The API is documented using SwaggerUi, which you can access by runnign the api and navigating to [localhost:3333/api](http://localhost:3333/api)
 
-### Distributed Computation Caching & Distributed Task Execution
+The documentation contains all of the available endpoints as well as how to call them and what they return.
 
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-cloud-card.png"></p>
+## License
 
-Nx Cloud pairs with Nx in order to enable you to build and test code more rapidly, by up to 10 times. Even teams that are new to Nx can connect to Nx Cloud and start saving time instantly.
-
-Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.
-
-Visit [Nx Cloud](https://nx.app/) to learn more.
+Distributed under the MIT License. See [`LICENSE`](./LICENSE) for more information.
