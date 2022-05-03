@@ -1,3 +1,4 @@
+import { Name, User } from '@models';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -6,8 +7,6 @@ import {
   IUpdateNameRequst,
 } from '@shitpost-generator/interfaces';
 import { Connection, EntityNotFoundError, Repository } from 'typeorm';
-import { Name } from '../models/name.entity';
-import { User } from '../models/user.entity';
 
 @Injectable()
 export class NamesService {

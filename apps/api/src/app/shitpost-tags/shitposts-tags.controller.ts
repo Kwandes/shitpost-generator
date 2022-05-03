@@ -1,3 +1,4 @@
+import { ShitpostTag, User } from '@models';
 import {
   Body,
   Controller,
@@ -26,8 +27,6 @@ import {
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
 import { AuthUser } from '../auth/user.decorator';
-import { ShitpostTag } from '../models/shitpost-tag.entity';
-import { User } from '../models/user.entity';
 import { ShitpostTagsService } from './shitposts-tags.service';
 
 @ApiBearerAuth()

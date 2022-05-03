@@ -4,6 +4,7 @@
     "api": "apps/api",
     "interfaces": "libs/interfaces",
     "local-storage": "libs/local-storage",
+    "models": "libs/models",
     "shitpost-generator": "apps/shitpost-generator",
     "shitpost-generator-e2e": "apps/shitpost-generator-e2e"
   }

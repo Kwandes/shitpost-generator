@@ -1,6 +1,6 @@
+import { Name } from '@models';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Name } from '../models/name.entity';
 import { NamesController } from './names.controller';
 import { NamesService } from './names.service';
 

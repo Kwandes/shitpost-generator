@@ -1,7 +1,6 @@
+import { Shitpost, ShitpostTag } from '@models';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ShitpostTag } from '../models/shitpost-tag.entity';
-import { Shitpost } from '../models/shitpost.entity';
 import { ShitpostsController } from './shitposts.controller';
 import { ShitpostsService } from './shitposts.service';
 

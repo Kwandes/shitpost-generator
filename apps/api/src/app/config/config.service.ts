@@ -1,8 +1,5 @@
+import { Name, Shitpost, ShitpostTag, User } from '@models';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { Name } from '../models/name.entity';
-import { ShitpostTag } from '../models/shitpost-tag.entity';
-import { Shitpost } from '../models/shitpost.entity';
-import { User } from '../models/user.entity';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();

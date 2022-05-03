@@ -1,3 +1,4 @@
+import { ShitpostTag, User } from '@models';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -6,8 +7,6 @@ import {
   IUpdateShitpostTagRequst,
 } from '@shitpost-generator/interfaces';
 import { EntityNotFoundError, Repository } from 'typeorm';
-import { ShitpostTag } from '../models/shitpost-tag.entity';
-import { User } from '../models/user.entity';
 
 @Injectable()
 export class ShitpostTagsService {

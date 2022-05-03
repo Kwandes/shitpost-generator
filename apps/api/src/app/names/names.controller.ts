@@ -1,3 +1,4 @@
+import { Name, User } from '@models';
 import {
   Body,
   Controller,
@@ -27,8 +28,6 @@ import {
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
 import { AuthUser } from '../auth/user.decorator';
-import { Name } from '../models/name.entity';
-import { User } from '../models/user.entity';
 import { NamesService } from './names.service';
 
 @ApiBearerAuth()

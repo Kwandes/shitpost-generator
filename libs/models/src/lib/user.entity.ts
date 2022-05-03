@@ -7,17 +7,17 @@ import { Base } from './base.entity';
 export class User extends Base implements IUser {
   @ApiModelProperty()
   @PrimaryGeneratedColumn('uuid')
-  userId: string;
+  userId!: string;
 
   @ApiModelProperty()
   @Column({ length: 254, unique: true })
-  email: string;
+  email!: string;
 
   @ApiModelProperty()
   @Column({ length: 120 })
-  password: string;
+  password!: string;
 
   @ApiModelProperty()
   @Column({ type: 'enum', enum: Role, default: Role.admin })
-  role: Role;
+  role!: Role;
 }
