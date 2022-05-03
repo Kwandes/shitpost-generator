@@ -5,6 +5,7 @@
     "interfaces": "libs/interfaces",
     "local-storage": "libs/local-storage",
     "models": "libs/models",
+    "seeder": "apps/seeder",
     "shitpost-generator": "apps/shitpost-generator",
     "shitpost-generator-e2e": "apps/shitpost-generator-e2e"
   }
