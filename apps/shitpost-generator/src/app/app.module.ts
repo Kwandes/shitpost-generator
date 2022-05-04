@@ -11,6 +11,7 @@ import { AdminComponent } from './pages/admin/admin.component';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
+import { ShitpostsComponent } from './pages/shitposts/shitposts.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { UserComponent } from './pages/user/user.component';
 import { MatrixTerminalComponent } from './shared/components/matrix-terminal/matrix-terminal.component';
@@ -27,6 +28,7 @@ import { authInterceptorProviders } from './shared/helpers/auth.interceptor';
     HomeComponent,
     UserComponent,
     AdminComponent,
+    ShitpostsComponent,
     TsParticlesComponent,
     RadarComponent,
     MatrixTerminalComponent,

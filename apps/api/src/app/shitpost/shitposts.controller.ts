@@ -36,8 +36,6 @@ import { ShitpostsService } from './shitposts.service';
 export class ShitpostsController {
   constructor(private readonly shitpostsService: ShitpostsService) {}
 
-  @UseGuards(JwtAuthGuard)
-  @Roles(Role.admin)
   @Get('')
   @ApiOperation({ summary: 'Get a list of all shitposts. Role: Admin' })
   @ApiOkResponse({ type: [Shitpost] })
