@@ -30,12 +30,10 @@ export class AuthGuard implements CanActivate {
         Roles array in the Route \`data\` property has to be provided for AuthGuard.
           Example:
           {
-            path: 'profile',
-            component: ProfileComponent,
+            path: 'admin',
+            component: AdminComponent,
             canActivate: [AuthGuard],
-            data: {
-              roles: ['ROLE_ADMIN],
-            },
+            data: { role: Role.admin }
           },
         `;
     }

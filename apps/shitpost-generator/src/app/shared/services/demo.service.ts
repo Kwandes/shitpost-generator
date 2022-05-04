@@ -22,7 +22,6 @@ export class DemoService {
   fetchUserData(): Observable<IMessage> {
     return this.http.get<IMessage>(`${env.apiUrl}/api/user`, httpOptions);
   }
-
   /**
    * Fetch admins confidential data;
    * @returns observable of the API request

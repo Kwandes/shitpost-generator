@@ -20,8 +20,11 @@
   class="wrapper"
   [formGroup]="signupForm"
 >
-  <h1>Sign up</h1>
-  <div class="input">
+  <h1>Registration</h1>
+
+  <!-- ====== Stage I - email, password  and role ====== -->
+  <h3 *ngIf="!stageOnePassed">Step 1</h3>
+  <div *ngIf="!stageOnePassed" class="input">
     <label for="email">E-mail</label>
     <input
       type="email"
@@ -42,7 +45,7 @@
     >
   </div>
 
-  <div class="input">
+  <div *ngIf="!stageOnePassed" class="input">
     <label for="password">Password</label>
     <input
       #password
@@ -64,23 +67,80 @@
     >
   </div>
 
-  <select class="fancy-select" name="role" formControlName="role">
+  <select
+    *ngIf="!stageOnePassed"
+    class="fancy-select"
+    name="role"
+    formControlName="role"
+  >
     <option *ngFor="let role of roleArray" [value]="role" selected="">
       {{ role }}
     </option>
   </select>
 
+  <div
+    *ngIf="!stageOnePassed"
+    class="input"
+    style="display: flex; flex-direction: row; align-items: center"
+  >
+    <input
+      type="checkbox"
+      formControlName="readTheBoringStuff"
+      name="readTheBoringStuff"
+      id="readTheBoringStuff"
+    />
+    <a
+      id="readTheBoringStuffText"
+      href="http://www.bullshit.com/statements/agreement.html"
+      target="_blank"
+      >I have read the terms of conditions and privacy cookies</a
+    >
+  </div>
+
   <button
+    *ngIf="!stageOnePassed"
+    (click)="beginStageTwo()"
+    id="signup-btn"
+    class="fancy-btn"
+    [disabled]="signupEnabled()"
+  >
+    Register
+  </button>
+
+  <!-- ====== Stage II - name, last name and birthdate ====== -->
+  <h3 *ngIf="stageOnePassed">Step 2</h3>
+
+  <div *ngIf="stageOnePassed" class="input">
+    <label for="name">Name</label>
+    <input
+      formControlName="name"
+      placeholder="Your Name"
+      name="name"
+      id="name"
+    />
+  </div>
+
+  <button
+    *ngIf="stageOnePassed"
     type="submit"
     id="signup-btn"
     class="fancy-btn"
     [disabled]="signupEnabled()"
   >
-    Sign Up
+    Complete
   </button>
+
+  <!-- ====== Login in instead and other BS ====== -->
   <hr />
-  <button type="button" routerLink="/login" id="login-btn" class="fancy-btn">
-    Log In
+
+  <button
+    type="button"
+    routerLink="/login"
+    id="login-btn"
+    class="fancy-btn"
+    style="width: fit-content"
+  >
+    I already have an account, I wanna log in instead! Sorry I forgot...
   </button>
   <div
     *ngIf="alert"
@@ -92,7 +152,13 @@
     class="fancy-btn"
     style="width: 100%"
     *ngIf="getAccessInfo()"
-    [routerLink]="getAccessInfo()?.role === 'user' ? '/user' : '/admin'"
+    [routerLink]="
+      getAccessInfo()?.role === 'user'
+        ? '/user'
+        : getAccessInfo()?.role === 'admin'
+        ? '/admin'
+        : 'admin'
+    "
   >
     Go to my role confidential info page
   </button>

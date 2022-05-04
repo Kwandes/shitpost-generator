@@ -1,8 +1,39 @@
 <div class="min-width">
   <div class="full-page">
+    <nav>
+      <ul style="list-style-type: armenian">
+        <li>
+          <button class="fancy-btn" routerLink="home">Home</button>
+        </li>
+        <li>
+          <button class="fancy-btn" routerLink="login">Authenticate</button>
+        </li>
+        <li>
+          <button class="fancy-btn" routerLink="signup">Sell your data</button>
+        </li>
+        <li>
+          <button class="fancy-btn" routerLink="whatDidYouThinkThisWouldBe">
+            404
+          </button>
+        </li>
+        <li *ngIf="role === 'user'">
+          <button class="fancy-btn" routerLink="user">Users secrets</button>
+        </li>
+        <li *ngIf="role === 'admin'">
+          <button class="fancy-btn" routerLink="admin">
+            Run as Administrator
+          </button>
+        </li>
+        <li *ngIf="isLoggedIn">
+          <button class="fancy-btn" (click)="logout()">
+            De-authenticate Thyself
+          </button>
+        </li>
+      </ul>
+    </nav>
     <router-outlet></router-outlet>
-    <div id="logout-btn-wrapper" *ngIf="isLoggedIn">
-      <button class="fancy-btn" (click)="logout()">Log Out</button>
-    </div>
+    <shitpost-generator-ts-particles></shitpost-generator-ts-particles>
+    <shitpost-generator-radar></shitpost-generator-radar>
+    <shitpost-generator-matrix-terminal></shitpost-generator-matrix-terminal>
   </div>
 </div>

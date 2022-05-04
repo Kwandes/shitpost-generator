@@ -85,8 +85,14 @@
     class="fancy-btn"
     style="width: 100%"
     *ngIf="getAccessInfo()"
-    [routerLink]="getAccessInfo()?.role === 'user' ? '/user' : '/admin'"
+    [routerLink]="
+      getAccessInfo()?.role === 'user'
+        ? '/user'
+        : getAccessInfo()?.role === 'admin'
+        ? '/admin'
+        : 'admin'
+    "
   >
-    Go to my role confidential info page
+    > Go to my role confidential info page
   </button>
 </form>

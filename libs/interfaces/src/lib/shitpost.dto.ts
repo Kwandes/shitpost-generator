@@ -23,7 +23,7 @@ export class CreateShitpostRequest implements ICreateShitpostRequest {
 
   @ApiModelProperty()
   @IsUUID('all', { each: true })
-  tags: string[];
+  tags!: string[];
 }
 
 export class UpdateShitpostRequest implements IUpdateShitpostRequst {

@@ -1,16 +1,17 @@
 .full-page {
   min-height: 100vh;
-  background-image: url('apps/shitpost-generator/src/assets/background-images/particles-dark.png');
-  background-color: grey;
-  background-repeat: repeat;
 }
 
 .min-width {
   min-width: 310px;
 }
 
-#logout-btn-wrapper {
+nav {
   position: absolute;
   top: 20px;
   left: 20px;
+}
+
+nav > ul > li > button {
+  width: 15vw;
 }

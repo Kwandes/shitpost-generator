@@ -1,0 +1,29 @@
+canvas {
+  z-index: -1;
+  position: absolute;
+  top: 10vh;
+  left: 60vw;
+  opacity: 0.7;
+}
+
+.text-wrapper {
+  z-index: -1.1;
+  position: absolute;
+  top: 10vh;
+  left: 60vw;
+  width: 37.5vw;
+  height: 40vh;
+  opacity: 0.7;
+
+  font-family: monospace;
+  font-size: small;
+  color: #4af626;
+  white-space: pre-line;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 2px;
+  border: 2px darkslategrey solid;
+}

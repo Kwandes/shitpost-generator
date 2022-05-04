@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ILoginResponse, IMessage } from '@shitpost-generator/interfaces';
+import { ILoginResponse, IMessage, Role } from '@shitpost-generator/interfaces';
 import {
   LocalStorageService,
   LocalStorageVars,
@@ -15,8 +15,10 @@ import { AuthService } from './shared/services/auth.service';
 })
 export class AppComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
+  role?: Role;
   loggedInCheckInterval!: number;
   hello$ = this.http.get<IMessage>(`${env.apiUrl}/api/hello`);
+
   constructor(
     private http: HttpClient,
     private localStorageService: LocalStorageService,
@@ -29,17 +31,29 @@ export class AppComponent implements OnInit, OnDestroy {
         LocalStorageVars.accessTokenInfo
       )?.value != null;
     // periodically check the logged in status.
-    // I techncially could subscribe to local storage but angular strict rules are making it n annoying process so I went with this meh approach.
+    // I technically could subscribe to local storage but angular strict rules are making it n annoying process so I went with this meh approach.
     this.loggedInCheckInterval = window.setInterval(() => {
-      this.isLoggedIn =
-        this.localStorageService.getItem<ILoginResponse>(
-          LocalStorageVars.accessTokenInfo
-        )?.value != null;
-    }, 5000);
+      this.updateAccessInfo();
+    }, 2500);
   }
 
   ngOnDestroy(): void {
     clearInterval(this.loggedInCheckInterval);
+  }
+
+  /**
+   * Update isLoggedIn and role variables based on the access token info.
+   */
+  updateAccessInfo(): void {
+    this.isLoggedIn =
+      this.localStorageService.getItem<ILoginResponse>(
+        LocalStorageVars.accessTokenInfo
+      )?.value != null;
+    if (this.isLoggedIn) {
+      this.role = this.localStorageService.getItem<ILoginResponse>(
+        LocalStorageVars.accessTokenInfo
+      )?.value?.role;
+    }
   }
 
   /**
@@ -48,5 +62,6 @@ export class AppComponent implements OnInit, OnDestroy {
   logout(): void {
     this.authService.logout();
     this.isLoggedIn = false;
+    this.role = undefined;
   }
 }

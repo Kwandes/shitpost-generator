@@ -1,7 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ILoginResponse } from '@shitpost-generator/interfaces';
+import { Router } from '@angular/router';
+import { ILoginResponse, Role } from '@shitpost-generator/interfaces';
 import {
   LocalStorageService,
   LocalStorageVars,
@@ -11,7 +12,7 @@ import { AuthService } from '../../shared/services/auth.service';
 @Component({
   selector: 'shitpost-generator-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
@@ -26,6 +27,7 @@ export class LoginComponent implements OnInit {
   isLoggedIn = false;
 
   constructor(
+    private readonly router: Router,
     private readonly authService: AuthService,
     private readonly localStorageService: LocalStorageService
   ) {}
@@ -71,6 +73,17 @@ export class LoginComponent implements OnInit {
           accessToken: response.accessToken,
           role: response.role,
         });
+        // Redirect the user to the roles' page
+        switch (response.role) {
+          case Role.user: {
+            this.router.navigate(['/user']);
+            break;
+          }
+          case Role.admin: {
+            this.router.navigate(['/admin']);
+            break;
+          }
+        }
       },
       error: (err: HttpErrorResponse) => {
         console.error(err);

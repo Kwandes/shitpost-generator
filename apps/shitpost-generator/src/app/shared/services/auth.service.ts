@@ -53,13 +53,12 @@ export class AuthService {
    * @returns observable of the API request
    */
   register(params: ISignupRequest, role: Role): Observable<ISignupResponse> {
-    const { email, password } = params;
+    // Remove null and undefined values
+    params = JSON.parse(JSON.stringify(params));
+
     return this.http.post<ISignupResponse>(
       `${env.apiUrl}/api/auth/signup?role=${role}`,
-      {
-        email,
-        password,
-      },
+      params,
       httpOptions
     );
   }

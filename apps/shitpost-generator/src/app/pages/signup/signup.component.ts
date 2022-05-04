@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ILoginResponse, Role } from '@shitpost-generator/interfaces';
 import {
   LocalStorageService,
@@ -11,7 +12,7 @@ import { AuthService } from '../../shared/services/auth.service';
 @Component({
   selector: 'shitpost-generator-signup',
   templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.css'],
+  styleUrls: ['./signup.component.scss'],
 })
 export class SignupComponent implements OnInit {
   signupForm!: FormGroup;
@@ -29,7 +30,11 @@ export class SignupComponent implements OnInit {
   roleArray: string[];
   isLoggedIn = false;
 
+  // Very well named variable to control what stage the registration is in (email + password + role or user details like name)
+  stageOnePassed = false;
+
   constructor(
+    private readonly router: Router,
     private readonly authService: AuthService,
     private readonly localStorageService: LocalStorageService
   ) {
@@ -48,6 +53,8 @@ export class SignupComponent implements OnInit {
         Validators.maxLength(100),
       ]),
       role: new FormControl(Role.user),
+      readTheBoringStuff: new FormControl('', [Validators.requiredTrue]),
+      name: new FormControl(''),
     });
     this.isLoggedIn =
       this.localStorageService.getItem<ILoginResponse>(
@@ -68,7 +75,13 @@ export class SignupComponent implements OnInit {
     const password = this.signupForm.get('password')?.value;
     const role = this.signupForm.get('role')?.value;
     this.authService
-      .register({ email: email, password: password }, role)
+      .register(
+        {
+          email: email,
+          password: password,
+        },
+        role
+      )
       .subscribe({
         next: (response) => {
           this.isLoading = false;
@@ -80,6 +93,17 @@ export class SignupComponent implements OnInit {
             accessToken: response.accessToken,
             role: response.role,
           });
+          // Redirect the user to the roles' page
+          switch (response.role) {
+            case Role.user: {
+              this.router.navigate(['/user']);
+              break;
+            }
+            case Role.admin: {
+              this.router.navigate(['/admin']);
+              break;
+            }
+          }
         },
         error: (err: HttpErrorResponse) => {
           console.error(err);
@@ -103,12 +127,20 @@ export class SignupComponent implements OnInit {
     );
   }
 
+  beginStageTwo() {
+    this.stageOnePassed = true;
+  }
+
   /**
    * Allow pressing the log in button by pressing enter while the credentials are valid.
    */
   @HostListener('document:keydown.enter') enterKeyPressed() {
     if (this.signupEnabled()) {
-      this.onSubmit();
+      if (this.stageOnePassed) {
+        this.onSubmit();
+      } else {
+        this.stageOnePassed = true;
+      }
     }
   }
 
