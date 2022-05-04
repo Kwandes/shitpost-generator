@@ -32,6 +32,7 @@ export class SeedService {
     await this.resetDatabase();
 
     // Seed the entities
+    this.logger.debug('Populating tables with seed data');
     await this.seedUsers();
     await this.seedShitpostTags();
     await this.seedShitposts();
@@ -65,9 +66,18 @@ export class SeedService {
   private async cleanAll(entities) {
     try {
       const dbType = this.connection.options.type;
-
       const manager = getManager();
       const tables = entities.map((entity) => '"' + entity.tableName + '"');
+
+      if (dbType === 'mysql') {
+        // Can't delete from nor truncate multiple tables at once
+        // Can't truncate due to foreign key constraints
+        for (const table of tables) {
+          const query = `DELETE FROM ` + table.replaceAll(`"`, ``) + ';';
+          await manager.query(query);
+          console.log(`${table} has perished`);
+        }
+      }
 
       if (dbType === 'postgres') {
         const truncateSql = `TRUNCATE TABLE ${tables.join(
