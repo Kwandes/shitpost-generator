@@ -1,0 +1,52 @@
+{
+  "root": "apps/api-mongo",
+  "sourceRoot": "apps/api-mongo/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/api-mongo",
+        "main": "apps/api-mongo/src/main.ts",
+        "tsConfig": "apps/api-mongo/tsconfig.app.json",
+        "assets": ["apps/api-mongo/src/assets"]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/api-mongo/src/environments/environment.ts",
+              "with": "apps/api-mongo/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:node",
+      "options": {
+        "buildTarget": "api-mongo:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/api-mongo/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/api-mongo"],
+      "options": {
+        "jestConfig": "apps/api-mongo/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

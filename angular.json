@@ -2,6 +2,7 @@
   "version": 2,
   "projects": {
     "api": "apps/api",
+    "api-mongo": "apps/api-mongo",
     "interfaces": "libs/interfaces",
     "local-storage": "libs/local-storage",
     "models": "libs/models",
