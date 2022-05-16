@@ -1,3 +1,4 @@
+import { ShitpostMongo, UserMongo } from '@models';
 import {
   Body,
   Controller,
@@ -17,16 +18,15 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import {
-  CreateShitpostRequest,
-  ICreateShitpostResponse,
-  IShitpost,
+  CreateShitpostRequestMongo,
+  ICreateShitpostResponseMongo,
+  IShitpostMongo,
   Role,
-  UpdateShitpostRequest,
+  UpdateShitpostRequestMongo,
 } from '@shitpost-generator/interfaces';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
 import { AuthUser } from '../auth/user.decorator';
-import { Shitpost, User } from '../models';
 import { ParseObjectIdPipe } from '../shared/pipes/object-id-validation.pipe';
 import { ShitpostsService } from './shitposts.service';
 
@@ -38,8 +38,8 @@ export class ShitpostsController {
 
   @Get('')
   @ApiOperation({ summary: 'Get a list of all shitposts. Role: Admin' })
-  @ApiOkResponse({ type: [Shitpost] })
-  async getAll(): Promise<IShitpost[]> {
+  @ApiOkResponse({ type: [ShitpostMongo] })
+  async getAll(): Promise<IShitpostMongo[]> {
     return this.shitpostsService.findAll();
   }
 
@@ -47,8 +47,8 @@ export class ShitpostsController {
   @Roles(Role.admin)
   @Get(':id')
   @ApiOperation({ summary: 'Get a a shitpost by id. Role: Admin' })
-  @ApiOkResponse({ type: Shitpost })
-  get(@Param('id', ParseObjectIdPipe) id: string): Promise<IShitpost> {
+  @ApiOkResponse({ type: ShitpostMongo })
+  get(@Param('id', ParseObjectIdPipe) id: string): Promise<IShitpostMongo> {
     return this.shitpostsService.findOne(id);
   }
 
@@ -58,11 +58,11 @@ export class ShitpostsController {
     summary:
       'Create a new shitpost entry. Can be done with authorized or anonymous',
   })
-  @ApiOkResponse({ type: Shitpost })
+  @ApiOkResponse({ type: ShitpostMongo })
   create(
-    @Body() createShitpostRequest: CreateShitpostRequest,
-    @AuthUser() user: User
-  ): Promise<ICreateShitpostResponse> {
+    @Body() createShitpostRequest: CreateShitpostRequestMongo,
+    @AuthUser() user: UserMongo
+  ): Promise<ICreateShitpostResponseMongo> {
     return this.shitpostsService.create(createShitpostRequest, user);
   }
 
@@ -70,11 +70,11 @@ export class ShitpostsController {
   @Roles(Role.admin)
   @Put(':id')
   @ApiOperation({ summary: 'Update shitpost by id. Role: Admin' })
-  @ApiOkResponse({ type: Shitpost })
+  @ApiOkResponse({ type: ShitpostMongo })
   update(
     @Param('id', ParseObjectIdPipe) id: string,
-    @Body() updateRequest: UpdateShitpostRequest
-  ): Promise<IShitpost> {
+    @Body() updateRequest: UpdateShitpostRequestMongo
+  ): Promise<IShitpostMongo> {
     return this.shitpostsService.update(updateRequest, id);
   }
 

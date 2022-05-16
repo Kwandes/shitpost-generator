@@ -2,7 +2,7 @@ import { NameTag } from '@models';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { nameTags } from '../constants/name-tags.constant copy';
+import { nameTags } from '../constants/name-tags.constant';
 
 @Injectable()
 export class NameTagsSeederService {

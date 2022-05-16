@@ -4,7 +4,7 @@ import {
   ILoginResponse,
   ISignupRequest,
   ISignupResponse,
-  IUser,
+  IUserMongo,
   Role,
 } from '@shitpost-generator/interfaces';
 import * as bcrypt from 'bcrypt';
@@ -38,8 +38,8 @@ export class AuthService {
    * @param user user for which the token gets generated.
    * @returns generated JWT.
    */
-  async login(user: IUser): Promise<ILoginResponse> {
-    const payload = { email: user.email, sub: user.userId };
+  async login(user: IUserMongo): Promise<ILoginResponse> {
+    const payload = { email: user.email, sub: user.id };
     return {
       accessToken: this.jwtService.sign(payload),
       role: user.role,

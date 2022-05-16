@@ -1,21 +1,19 @@
+import { ShitpostMongo, UserMongo } from '@models';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
-  ICreateShitpostRequest,
-  IShitpost,
-  IShitpostTag,
-  IUpdateShitpostRequst,
+  ICreateShitpostRequestMongo,
+  IShitpostMongo,
+  IUpdateShitpostRequstMongo,
+  IUserMongo,
 } from '@shitpost-generator/interfaces';
 import { Connection, EntityNotFoundError, MongoRepository } from 'typeorm';
-import { Shitpost, ShitpostTag, User } from '../models';
 
 @Injectable()
 export class ShitpostsService {
   constructor(
-    @InjectRepository(Shitpost)
-    private readonly shitpostRepo: MongoRepository<Shitpost>,
-    @InjectRepository(ShitpostTag)
-    private readonly shitpostTagsRepo: MongoRepository<ShitpostTag>,
+    @InjectRepository(ShitpostMongo)
+    private readonly shitpostRepo: MongoRepository<ShitpostMongo>,
     private connection: Connection
   ) {}
 
@@ -24,9 +22,9 @@ export class ShitpostsService {
    * @param id id of the entity.
    * @returns entity or EntityNotFound error.
    */
-  async findOne(id: string): Promise<Shitpost> {
+  async findOne(id: string): Promise<ShitpostMongo> {
     return this.shitpostRepo.findOneOrFail({
-      where: { shitpostId: id },
+      where: { _id: id },
       relations: ['tags'],
     });
   }
@@ -35,7 +33,7 @@ export class ShitpostsService {
    * Find all entries.
    * @returns a list of entities.
    */
-  async findAll(): Promise<Shitpost[]> {
+  async findAll(): Promise<ShitpostMongo[]> {
     return this.shitpostRepo.find({ relations: ['tags'] });
   }
 
@@ -45,7 +43,10 @@ export class ShitpostsService {
    * @param id the id of the entity to update.
    * @returns updated entity.
    */
-  async update(request: IUpdateShitpostRequst, id: string): Promise<IShitpost> {
+  async update(
+    request: IUpdateShitpostRequstMongo,
+    id: string
+  ): Promise<IShitpostMongo> {
     const { text, sfw, isEnabled, tags } = request;
     const queryRunner = this.connection.createQueryRunner();
 
@@ -53,20 +54,10 @@ export class ShitpostsService {
     await queryRunner.startTransaction();
     try {
       let shitpost = await this.shitpostRepo.findOneOrFail({
-        where: { shitpostId: id },
+        where: { _id: id },
       });
 
-      if (tags) {
-        const tagList: IShitpostTag[] = [];
-        for (const tag of tags) {
-          tagList.push(
-            await this.shitpostTagsRepo.findOneOrFail({
-              where: { tagId: tag },
-            })
-          );
-        }
-        shitpost.tags = tagList;
-      }
+      shitpost.tags = tags;
       shitpost.text = text;
       shitpost.sfw = sfw;
       shitpost.isEnabled = isEnabled;
@@ -92,30 +83,29 @@ export class ShitpostsService {
    * @returns created entity.
    */
   async create(
-    request: ICreateShitpostRequest,
-    createdBy: User = null
-  ): Promise<IShitpost> {
+    request: ICreateShitpostRequestMongo,
+    createdBy: UserMongo = null
+  ): Promise<IShitpostMongo> {
     const { text, sfw, tags } = request;
-    const tagList: IShitpostTag[] = [];
 
     const queryRunner = this.connection.createQueryRunner();
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      for (const tag of tags) {
-        tagList.push(
-          await queryRunner.manager.findOneOrFail(ShitpostTag, {
-            where: { tagId: tag },
-          })
-        );
+      let user: IUserMongo = undefined;
+      if (createdBy.email) {
+        user = await queryRunner.manager.findOneOrFail(UserMongo, {
+          email: createdBy.email,
+        });
       }
 
-      let newShitpost = queryRunner.manager.create(Shitpost, {
+      let newShitpost = queryRunner.manager.create(ShitpostMongo, {
         text: text,
         sfw: sfw,
-        createdBy: createdBy,
-        tags: tagList,
+        createdBy: user ? user : null,
+        tags: tags,
+        isEnabled: user ? true : false,
       });
       newShitpost = await queryRunner.manager.save(newShitpost);
       await queryRunner.commitTransaction();
@@ -128,8 +118,6 @@ export class ShitpostsService {
       // console.warn(err);
     } finally {
       // you need to release a queryRunner which was manually instantiated
-      console.log('release');
-
       await queryRunner.release();
     }
   }
@@ -141,11 +129,11 @@ export class ShitpostsService {
    */
   async perish(id: string): Promise<void> {
     const response = await this.shitpostRepo.delete({
-      shitpostId: id,
+      id: id,
     });
 
     if (response.affected === 0) {
-      throw new EntityNotFoundError(User, id);
+      throw new EntityNotFoundError(ShitpostMongo, id);
     }
   }
 }

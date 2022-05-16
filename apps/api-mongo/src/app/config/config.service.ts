@@ -1,5 +1,5 @@
+import { NameMongo, ShitpostMongo, UserMongo } from '@models';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { Name, NameTag, Shitpost, ShitpostTag, User } from '../models';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -43,7 +43,7 @@ class ConfigService {
       password: this.getValue('MONGO_PASSWORD', false) || 'mongopw',
       database: this.getValue('MONGO_DATABASE', false) || 'shitpost_generator',
 
-      entities: [User, Shitpost, ShitpostTag, Name, NameTag],
+      entities: [UserMongo, ShitpostMongo, NameMongo],
     };
   }
 }

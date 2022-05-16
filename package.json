@@ -9,7 +9,10 @@
     "build": "nx build",
     "test": "nx test",
     "lint": "nx workspace-lint && nx run-many --target=lint --all=true",
-    "seed": "nx run seeder:build && node ./dist/apps/seeder/main"
+    "seed": "nx run seeder:build && node ./dist/apps/seeder/main  --mysql --mongo --neo4j",
+    "seed:mysql": "nx run seeder:build && node ./dist/apps/seeder/main --mysql",
+    "seed:mongo": "nx run seeder:build && node ./dist/apps/seeder/main --mongo",
+    "seed:neo4j": "nx run seeder:build && node ./dist/apps/seeder/main --neo4j"
   },
   "private": true,
   "dependencies": {

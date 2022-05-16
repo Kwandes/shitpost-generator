@@ -7,11 +7,11 @@ import {
   IsUUID,
 } from 'class-validator';
 import {
-  ICreateShitpostRequest,
-  IUpdateShitpostRequst,
+  ICreateShitpostRequestMongo,
+  IUpdateShitpostRequstMongo,
 } from './shitpost.interface';
 
-export class CreateShitpostRequest implements ICreateShitpostRequest {
+export class CreateShitpostRequest implements CreateShitpostRequest {
   @ApiModelProperty()
   @IsString()
   @IsNotEmpty()
@@ -23,10 +23,26 @@ export class CreateShitpostRequest implements ICreateShitpostRequest {
 
   @ApiModelProperty()
   @IsUUID('all', { each: true })
+  @IsOptional()
   tags!: string[];
 }
 
-export class UpdateShitpostRequest implements IUpdateShitpostRequst {
+export class CreateShitpostRequestMongo implements ICreateShitpostRequestMongo {
+  @ApiModelProperty()
+  @IsString()
+  @IsNotEmpty()
+  text!: string;
+
+  @ApiModelProperty()
+  @IsBoolean()
+  sfw!: boolean;
+
+  @ApiModelProperty()
+  @IsOptional()
+  tags!: string[];
+}
+
+export class UpdateShitpostRequest implements UpdateShitpostRequest {
   @ApiModelProperty()
   @IsString()
   @IsNotEmpty()
@@ -42,6 +58,25 @@ export class UpdateShitpostRequest implements IUpdateShitpostRequst {
 
   @ApiModelProperty()
   @IsUUID('all', { each: true })
+  @IsOptional()
+  tags?: string[];
+}
+
+export class UpdateShitpostRequestMongo implements IUpdateShitpostRequstMongo {
+  @ApiModelProperty()
+  @IsString()
+  @IsNotEmpty()
+  text!: string;
+
+  @ApiModelProperty()
+  @IsBoolean()
+  sfw!: boolean;
+
+  @ApiModelProperty()
+  @IsBoolean()
+  isEnabled!: boolean;
+
+  @ApiModelProperty()
   @IsOptional()
   tags?: string[];
 }

@@ -128,8 +128,6 @@ export class NamesService {
       // console.warn(err);
     } finally {
       // you need to release a queryRunner which was manually instantiated
-      console.log('release');
-
       await queryRunner.release();
     }
   }

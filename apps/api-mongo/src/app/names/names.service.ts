@@ -1,21 +1,19 @@
+import { NameMongo, UserMongo } from '@models';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   ICreateNameRequest,
-  IName,
-  INameTag,
+  INameMongo,
   IUpdateNameRequst,
+  IUserMongo,
 } from '@shitpost-generator/interfaces';
 import { Connection, EntityNotFoundError, MongoRepository } from 'typeorm';
-import { Name, NameTag, User } from '../models';
 
 @Injectable()
 export class NamesService {
   constructor(
-    @InjectRepository(Name)
-    private readonly nameRepo: MongoRepository<Name>,
-    @InjectRepository(NameTag)
-    private readonly nameTagsRepo: MongoRepository<NameTag>,
+    @InjectRepository(NameMongo)
+    private readonly nameRepo: MongoRepository<NameMongo>,
     private connection: Connection
   ) {}
 
@@ -24,10 +22,9 @@ export class NamesService {
    * @param id id of the entity.
    * @returns entity or EntityNotFound error.
    */
-  async findOne(id: string): Promise<Name> {
+  async findOne(id: string): Promise<NameMongo> {
     return this.nameRepo.findOneOrFail({
-      where: { nameId: id },
-      relations: ['tags'],
+      where: { _id: id },
     });
   }
 
@@ -35,8 +32,8 @@ export class NamesService {
    * Find all entries.
    * @returns a list of entities.
    */
-  async findAll(): Promise<Name[]> {
-    return this.nameRepo.find({ relations: ['tags'] });
+  async findAll(): Promise<NameMongo[]> {
+    return this.nameRepo.find();
   }
 
   /**
@@ -45,7 +42,7 @@ export class NamesService {
    * @param id the id of the entity to update.
    * @returns updated entity.
    */
-  async update(request: IUpdateNameRequst, id: string): Promise<IName> {
+  async update(request: IUpdateNameRequst, id: string): Promise<INameMongo> {
     const { name, gender, isEnabled, tags } = request;
     const queryRunner = this.connection.createQueryRunner();
 
@@ -53,20 +50,10 @@ export class NamesService {
     await queryRunner.startTransaction();
     try {
       let nameEntity = await this.nameRepo.findOneOrFail({
-        where: { nameId: id },
+        where: { _id: id },
       });
 
-      if (tags) {
-        const tagList: INameTag[] = [];
-        for (const tag of tags) {
-          tagList.push(
-            await this.nameTagsRepo.findOneOrFail({
-              where: { tagId: tag },
-            })
-          );
-        }
-        nameEntity.tags = tagList;
-      }
+      nameEntity.tags = tags;
       nameEntity.name = name;
       nameEntity.gender = gender;
       nameEntity.isEnabled = isEnabled;
@@ -93,29 +80,28 @@ export class NamesService {
    */
   async create(
     request: ICreateNameRequest,
-    createdBy: User = null
-  ): Promise<IName> {
+    createdBy: UserMongo = null
+  ): Promise<INameMongo> {
     const { name, gender, tags } = request;
-    const tagList: INameTag[] = [];
 
     const queryRunner = this.connection.createQueryRunner();
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      for (const tag of tags) {
-        tagList.push(
-          await queryRunner.manager.findOneOrFail(NameTag, {
-            where: { tagId: tag },
-          })
-        );
-      }
+      let user: IUserMongo = undefined;
 
-      let newName = queryRunner.manager.create(Name, {
+      if (createdBy.email) {
+        user = await queryRunner.manager.findOneOrFail(UserMongo, {
+          email: createdBy.email,
+        });
+      }
+      let newName = queryRunner.manager.create(NameMongo, {
         name: name,
         gender: gender,
-        createdBy: createdBy,
-        tags: tagList,
+        createdBy: user ? user : null,
+        tags: tags,
+        isEnabled: user ? true : false,
       });
       newName = await queryRunner.manager.save(newName);
       await queryRunner.commitTransaction();
@@ -128,8 +114,6 @@ export class NamesService {
       // console.warn(err);
     } finally {
       // you need to release a queryRunner which was manually instantiated
-      console.log('release');
-
       await queryRunner.release();
     }
   }
@@ -141,11 +125,11 @@ export class NamesService {
    */
   async perish(id: string): Promise<void> {
     const response = await this.nameRepo.delete({
-      nameId: id,
+      id: id,
     });
 
     if (response.affected === 0) {
-      throw new EntityNotFoundError(User, id);
+      throw new EntityNotFoundError(NameMongo, id);
     }
   }
 }

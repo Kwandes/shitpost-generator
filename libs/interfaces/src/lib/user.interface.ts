@@ -7,3 +7,10 @@ export interface IUser extends IBase {
   password: string;
   role: Role;
 }
+
+export interface IUserMongo extends IBase {
+  id: string;
+  email: string;
+  password: string;
+  role: Role;
+}

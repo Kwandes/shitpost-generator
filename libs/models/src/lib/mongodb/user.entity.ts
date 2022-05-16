@@ -1,13 +1,13 @@
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { IUser, Role } from '@shitpost-generator/interfaces';
+import { IUserMongo, Role } from '@shitpost-generator/interfaces';
 import { Column, Entity, ObjectIdColumn } from 'typeorm';
-import { Base } from './base.entity';
+import { BaseMongo } from './base.entity';
 
 @Entity('users')
-export class User extends Base implements IUser {
+export class UserMongo extends BaseMongo implements IUserMongo {
   @ApiModelProperty()
   @ObjectIdColumn()
-  userId!: string;
+  id!: string;
 
   @ApiModelProperty()
   @Column({ length: 254, unique: true })

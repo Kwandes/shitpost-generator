@@ -1,19 +1,16 @@
+import { NameMongo, ShitpostMongo, UserMongo } from '@models';
 import { Injectable, Logger } from '@nestjs/common';
-import { Connection, getManager } from 'typeorm';
-import { NameTagsSeederService } from './services/name-tags.service';
+import { Connection, getMongoManager } from 'typeorm';
 import { NamesSeederService } from './services/names.service';
-import { ShitpostTagsSeederService } from './services/shitpost-tags.service';
 import { ShitpostsSeederService } from './services/shitposts.service';
 import { UsersSeederService } from './services/users.service';
 @Injectable()
-export class SeedService {
+export class SeedServiceMongo {
   constructor(
     private readonly logger: Logger,
     private readonly connection: Connection,
     private readonly usersService: UsersSeederService,
-    private readonly shitpostTagsService: ShitpostTagsSeederService,
     private readonly shitpostsService: ShitpostsSeederService,
-    private readonly nameTagsService: NameTagsSeederService,
     private readonly namesService: NamesSeederService
   ) {}
 
@@ -34,9 +31,7 @@ export class SeedService {
     // Seed the entities
     this.logger.debug('Populating tables with seed data');
     await this.seedUsers();
-    await this.seedShitpostTags();
     await this.seedShitposts();
-    await this.seedNameTags();
     await this.seedNames();
   }
 
@@ -66,29 +61,14 @@ export class SeedService {
   private async cleanAll(entities) {
     try {
       const dbType = this.connection.options.type;
-      const manager = getManager();
-      const tables = entities.map((entity) => '"' + entity.tableName + '"');
+      const manager = getMongoManager();
 
-      if (dbType === 'mysql') {
-        // Can't delete from nor truncate multiple tables at once
-        // Can't truncate due to foreign key constraints
-        for (const table of tables) {
-          const query = `DELETE FROM ` + table.replaceAll(`"`, ``) + ';';
-          await manager.query(query);
-          console.log(`${table} has perished`);
+      if (dbType === 'mongodb') {
+        const entities = [UserMongo, ShitpostMongo, NameMongo];
+        // Can't perform raw queries like `db.dropDatabase()` so gotta do a query for each table
+        for (const entity of entities) {
+          await manager.delete(entity, {});
         }
-      }
-
-      if (dbType === 'postgres') {
-        const truncateSql = `TRUNCATE TABLE ${tables.join(
-          ','
-        )} RESTART IDENTITY CASCADE;`;
-        await manager.query(truncateSql);
-      }
-
-      if (dbType === 'sqlite') {
-        // There is no SQLite specific TRUNCATE TABLE command
-        // Setting in typeorm config `dropSchema: true` clears database
       }
     } catch (error) {
       this.logger.error(error, 'Unable to clean database');
@@ -116,16 +96,7 @@ export class SeedService {
       this.logger.debug(`✅ Users created: ${response.length}`);
       return response;
     } catch (error) {
-      this.logger.error(error);
-    }
-  }
-
-  async seedShitpostTags() {
-    try {
-      const response = await Promise.all(this.shitpostTagsService.create());
-      this.logger.debug(`✅ Shitpost tags created: ${response.length}`);
-      return response;
-    } catch (error) {
+      this.logger.warn(`❌ Users failed to seed`);
       this.logger.error(error);
     }
   }
@@ -136,16 +107,7 @@ export class SeedService {
       this.logger.debug(`✅ Shitposts created: ${response.length}`);
       return response;
     } catch (error) {
-      this.logger.error(error);
-    }
-  }
-
-  async seedNameTags() {
-    try {
-      const response = await Promise.all(this.nameTagsService.create());
-      this.logger.debug(`✅ Name tags created: ${response.length}`);
-      return response;
-    } catch (error) {
+      this.logger.warn(`❌ Shitposts failed to seed`);
       this.logger.error(error);
     }
   }
@@ -156,6 +118,7 @@ export class SeedService {
       this.logger.debug(`✅ Names created: ${response.length}`);
       return response;
     } catch (error) {
+      this.logger.warn(`❌ Names failed to seed`);
       this.logger.error(error);
     }
   }

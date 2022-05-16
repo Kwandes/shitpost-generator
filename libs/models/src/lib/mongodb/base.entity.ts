@@ -2,7 +2,7 @@
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { IBase } from '@shitpost-generator/interfaces';
 import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
-export abstract class Base implements IBase {
+export abstract class BaseMongo implements IBase {
   @ApiModelProperty()
   @CreateDateColumn()
   createdAt?: Date;

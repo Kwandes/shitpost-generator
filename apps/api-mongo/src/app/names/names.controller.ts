@@ -1,3 +1,4 @@
+import { NameMongo, UserMongo } from '@models';
 import {
   Body,
   Controller,
@@ -17,16 +18,15 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import {
-  CreateNameRequest,
-  ICreateNameResponse,
-  IName,
+  CreateNameRequestMongo,
+  ICreateNameResponseMongo,
+  INameMongo,
   Role,
-  UpdateNameRequest,
+  UpdateNameRequestMongo,
 } from '@shitpost-generator/interfaces';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
 import { AuthUser } from '../auth/user.decorator';
-import { Name, User } from '../models';
 import { ParseObjectIdPipe } from '../shared/pipes/object-id-validation.pipe';
 import { NamesService } from './names.service';
 
@@ -40,8 +40,8 @@ export class NamesController {
   @Roles(Role.admin)
   @Get('')
   @ApiOperation({ summary: 'Get a list of all names. Role: Admin' })
-  @ApiOkResponse({ type: [Name] })
-  async getAll(): Promise<IName[]> {
+  @ApiOkResponse({ type: [NameMongo] })
+  async getAll(): Promise<INameMongo[]> {
     return this.namesService.findAll();
   }
 
@@ -49,8 +49,8 @@ export class NamesController {
   @Roles(Role.admin)
   @Get(':id')
   @ApiOperation({ summary: 'Get a a name by id. Role: Admin' })
-  @ApiOkResponse({ type: Name })
-  get(@Param('id', ParseObjectIdPipe) id: string): Promise<IName> {
+  @ApiOkResponse({ type: NameMongo })
+  get(@Param('id', ParseObjectIdPipe) id: string): Promise<INameMongo> {
     return this.namesService.findOne(id);
   }
 
@@ -60,11 +60,11 @@ export class NamesController {
     summary:
       'Create a new name entry. Can be done with authorized or anonymous',
   })
-  @ApiOkResponse({ type: Name })
+  @ApiOkResponse({ type: NameMongo })
   create(
-    @Body() createNameRequest: CreateNameRequest,
-    @AuthUser() user: User
-  ): Promise<ICreateNameResponse> {
+    @Body() createNameRequest: CreateNameRequestMongo,
+    @AuthUser() user: UserMongo
+  ): Promise<ICreateNameResponseMongo> {
     return this.namesService.create(createNameRequest, user);
   }
 
@@ -72,11 +72,11 @@ export class NamesController {
   @Roles(Role.admin)
   @Put(':id')
   @ApiOperation({ summary: 'Update name by id. Role: Admin' })
-  @ApiOkResponse({ type: Name })
+  @ApiOkResponse({ type: NameMongo })
   update(
     @Param('id', ParseObjectIdPipe) id: string,
-    @Body() updateRequest: UpdateNameRequest
-  ): Promise<IName> {
+    @Body() updateRequest: UpdateNameRequestMongo
+  ): Promise<INameMongo> {
     return this.namesService.update(updateRequest, id);
   }
 

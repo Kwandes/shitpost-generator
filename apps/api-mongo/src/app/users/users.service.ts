@@ -1,14 +1,18 @@
+import { UserMongo } from '@models';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ISignupRequest, IUser, Role } from '@shitpost-generator/interfaces';
+import {
+  ISignupRequest,
+  IUserMongo,
+  Role,
+} from '@shitpost-generator/interfaces';
 import { MongoRepository } from 'typeorm';
-import { User } from '../models';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepo: MongoRepository<User>
+    @InjectRepository(UserMongo)
+    private readonly userRepo: MongoRepository<UserMongo>
   ) {}
 
   /**
@@ -16,7 +20,7 @@ export class UsersService {
    * @param email email of the user.
    * @returns user or undefined.
    */
-  async findOne(email: string): Promise<User | undefined> {
+  async findOne(email: string): Promise<UserMongo | undefined> {
     return this.userRepo.findOne({ where: { email: email } });
   }
 
@@ -25,7 +29,10 @@ export class UsersService {
    * @param signupRequestDto information for user creation.
    * @returns created user.
    */
-  async create(signupRequestDto: ISignupRequest, role: Role): Promise<IUser> {
+  async create(
+    signupRequestDto: ISignupRequest,
+    role: Role
+  ): Promise<IUserMongo> {
     const { email, password } = signupRequestDto;
     const newUser = this.userRepo.create({
       email: email,
