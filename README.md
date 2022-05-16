@@ -83,7 +83,7 @@ docker run --name mysql --restart unless-stopped -e MYSQL_ROOT_PASSWORD=root -e 
 ##### MongoDb
 
 ```docker
-docker run --name mongodb -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=root -dp 27017:27017 mongo
+docker run --name mongodb --restart unless-stopped -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=root -dp 27017:27017 mongo
 ```
 
 4. _[Optional]_ Populate (seed) the database with example data
