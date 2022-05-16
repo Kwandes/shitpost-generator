@@ -61,9 +61,9 @@ class ConfigService {
 
       authSource: 'admin', //  extra step needed to mongoDb
       host: this.getValue('MONGO_HOST', false) || 'localhost',
-      port: parseInt(this.getValue('MONGO_PORT', false)) || 49153,
-      username: this.getValue('MONGO_USER', false) || 'docker',
-      password: this.getValue('MONGO_PASSWORD', false) || 'mongopw',
+      port: parseInt(this.getValue('MONGO_PORT', false)) || 27017,
+      username: this.getValue('MONGO_USER', false) || 'root',
+      password: this.getValue('MONGO_PASSWORD', false) || 'root',
       database: this.getValue('MONGO_DATABASE', false) || 'shitpost_generator',
 
       entities: [UserMongo, ShitpostMongo, NameMongo],

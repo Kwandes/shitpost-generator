@@ -12,6 +12,8 @@ Do you find yourself lacking ideas for names?\
 - [Angular](https://angular.io/) - frontend
 - [NX](https://nx.dev/) - repository structure as a monorepo
 - [MySql](mysql.com) - data persistance
+- [MongoDB](https://www.mongodb.com/) - data persistance but different
+- [Neo4J](https://neo4j.com/) - data persistance but more visual
 - And love 💖
 
 #### Configuration
@@ -60,20 +62,44 @@ npm install
 
 3. Configure the app
 
-Update the `.env` file if needed.
+Update the `.env` file if needed, or leave it empty and use the default cvalues (found in `env.template`).
 
-The app requires a MySQL database instance to connect to with an existing schema `shitpost_generator`
+There are multiple backend apps, each requirering its own database instance.
 
-You can run one locally via Docker with:
+- `api` uses MySQL
+- `api-mongo` uses MongoDb
+- `api-neo` uses Neo4j
+
+Each app expects a schema/colleciton called `shitpost_generator`,
+
+You can run each database locally via docker with the following commands:
+
+##### MySQL
 
 ```docker
 docker run --name mysql --restart unless-stopped -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=shitpost_generator -p 3306:3306 -d mysql
 ```
 
+##### MongoDb
+
+```docker
+docker run --name mongodb -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=root -dp 27017:27017 mongo
+```
+
 4. _[Optional]_ Populate (seed) the database with example data
+
+- Populate all databases (need ot be running or it will fail)
 
 ```sh
 npm run seed
+```
+
+- Populate specific database type
+
+```sh
+npm run seed:mysql
+npm run seed:mongo
+npm run seed:neo4j
 ```
 
 5. Serve the apps
@@ -86,13 +112,15 @@ You can either serve apps individually with:
 
 ```sh
 nx serve api
+nx serve api-mongo
+nx serve api-neo
 nx serve shitpost-generator
 ```
 
 or serve multiple apps using:
 
 ```sh
-nx run-many --maxParallel 2 --parallel true --projects api, shitpost-generator --target serve
+nx run-many --maxParallel 4 --parallel true --projects api, api-mongo, api-neo, shitpost-generator --target serve
 ```
 
 Find out more about how to use NX [here](https://nx.dev/latest/angular/getting-started/nx-cli)
