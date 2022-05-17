@@ -14,3 +14,9 @@ export interface IUserMongo extends IBase {
   password: string;
   role: Role;
 }
+
+export interface IUserNeo extends IBase {
+  email: string;
+  password: string;
+  role: Role;
+}

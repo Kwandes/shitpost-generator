@@ -86,6 +86,12 @@ docker run --name mysql --restart unless-stopped -e MYSQL_ROOT_PASSWORD=root -e 
 docker run --name mongodb --restart unless-stopped -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=root -dp 27017:27017 mongo
 ```
 
+##### Neo4J
+
+```docker
+docker run --name neo4j --restart unless-stopped -e NEO4J_AUTH=neo4j/root -d -p 7474:7474 -p 7687:7687 neo4j
+```
+
 4. _[Optional]_ Populate (seed) the database with example data
 
 - Populate all databases (need ot be running or it will fail)
