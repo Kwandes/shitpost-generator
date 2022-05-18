@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import {
   ILoginResponse,
   ISignupRequest,
   ISignupResponse,
-  IUser,
+  IUserNeo,
   Role,
 } from '@shitpost-generator/interfaces';
 import * as bcrypt from 'bcrypt';
@@ -24,11 +24,11 @@ export class AuthService {
    */
   async validateUser(loginRequestDto): Promise<any> {
     const { email, password } = loginRequestDto;
-    // const user = await this.usersService.findOne(email);
-    // if (user && (await this.compareHashes(password, user.password))) {
-    //   const { password, ...result } = user;
-    //   return result;
-    // }
+    const user = await this.usersService.findOneByEmail(email);
+    if (user && (await this.compareHashes(password, user.password))) {
+      const { password, ...result } = user;
+      return result;
+    }
     return null;
   }
 
@@ -38,7 +38,7 @@ export class AuthService {
    * @param user user for which the token gets generated.
    * @returns generated JWT.
    */
-  async login(user: IUser): Promise<ILoginResponse> {
+  async login(user: IUserNeo): Promise<ILoginResponse> {
     const payload = { email: user.email, sub: user.userId };
     return {
       accessToken: this.jwtService.sign(payload),
@@ -56,21 +56,26 @@ export class AuthService {
     role: Role
   ): Promise<ISignupResponse> {
     const { email, password } = signupRequestDto;
-    // if ((await this.usersService.findOne(email)) !== undefined) {
-    //   throw new BadRequestException(
-    //     `This email is already taken. Try adding some random digits to it 👍`
-    //   );
-    // }
+    let user: IUserNeo;
+    try {
+      user = await this.usersService.findOneByEmail(email);
+    } catch (err) {
+      // the caught was that the email is not registered, so we just continue and sign up a user
+    }
+    if (user) {
+      throw new BadRequestException(
+        `This email is already taken. Try adding some random digits to it 👍`
+      );
+    }
     const hashedPassword = await this.encodePassword(password);
-    // const user = await this.usersService.create(
-    //   {
-    //     email: email,
-    //     password: hashedPassword,
-    //   },
-    //   role
-    // );
-    // return await this.login(user);
-    return null;
+    user = await this.usersService.create(
+      {
+        email: email,
+        password: hashedPassword,
+      },
+      role
+    );
+    return await this.login(user);
   }
 
   /**

@@ -16,7 +16,13 @@ export interface IUserMongo extends IBase {
 }
 
 export interface IUserNeo extends IBase {
-  id: string;
+  userId: string;
+  email: string;
+  password: string;
+  role: Role;
+}
+
+export interface IUpdateUserNeoRequest {
   email: string;
   password: string;
   role: Role;

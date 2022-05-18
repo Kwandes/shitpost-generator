@@ -1,1 +1,2 @@
-MATCH (user:User) return user 
+MATCH (user:User)
+RETURN user

@@ -1,1 +1,3 @@
-MATCH (user:User) WHERE user.email= $1 return user
+MATCH (user:User)
+WHERE user.email= $1
+RETURN user

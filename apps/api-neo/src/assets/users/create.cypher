@@ -1,0 +1,1 @@
+CREATE (user:User {email: $1, password: $2, role: $3, userId: randomUUID()})

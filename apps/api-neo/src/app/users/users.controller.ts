@@ -1,12 +1,12 @@
 import { User, UserNeo } from '@models';
 import {
+  Body,
   Controller,
   Delete,
   Get,
   HttpCode,
   Param,
   ParseUUIDPipe,
-  Post,
   Put,
 } from '@nestjs/common';
 import {
@@ -15,9 +15,13 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { IUser, IUserNeo, Role } from '@shitpost-generator/interfaces';
+import {
+  IUser,
+  IUserNeo,
+  Role,
+  UpdateUserNeoRequest,
+} from '@shitpost-generator/interfaces';
 import { Roles } from '../auth/roles.decorator';
-import { AuthUser } from '../auth/user.decorator';
 import { UsersService } from './users.service';
 
 @ApiBearerAuth()
@@ -51,32 +55,16 @@ export class UsersController {
     return this.usersService.findOneByEmail(email);
   }
 
-  // @UseGuards(AuthGuard(['jwt', 'anonymous']))
-  @Post('')
-  @ApiOperation({
-    summary:
-      'Create a new user entry. Can be done with authorized or anonymous',
-  })
-  @ApiOkResponse({ type: User })
-  create(
-    // @Body() createUserRequest: ,
-    @AuthUser() user: User
-  ): Promise<IUser> {
-    // return this.usersService.create(createUserRequest, user);
-    return null;
-  }
-
   //@UseGuards(JwtAuthGuard)
   @Roles(Role.admin)
   @Put(':id')
   @ApiOperation({ summary: 'Update user by id. Role: Admin' })
   @ApiOkResponse({ type: User })
   update(
-    @Param('id', ParseUUIDPipe) id: string
-    // @Body() updateRequest: UpdateUserRequest
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateRequest: UpdateUserNeoRequest
   ): Promise<IUser> {
-    // return this.usersService.update(updateRequest, id);
-    return null;
+    return this.usersService.update(updateRequest, id);
   }
 
   //@UseGuards(JwtAuthGuard)
@@ -87,7 +75,6 @@ export class UsersController {
     summary: 'Delete a specific user. Role: Admin',
   })
   delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
-    // return this.usersService.perish(id);
-    return;
+    return this.usersService.perish(id);
   }
 }
