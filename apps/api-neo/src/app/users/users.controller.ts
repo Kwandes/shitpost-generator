@@ -8,6 +8,7 @@ import {
   Param,
   ParseUUIDPipe,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -21,6 +22,7 @@ import {
   Role,
   UpdateUserNeoRequest,
 } from '@shitpost-generator/interfaces';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
 import { UsersService } from './users.service';
 
@@ -37,7 +39,7 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Roles(Role.admin)
   @Get(':id')
   @ApiOperation({ summary: 'Get a a user by id. Role: Admin' })
@@ -46,7 +48,7 @@ export class UsersController {
     return this.usersService.findOneById(id);
   }
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Roles(Role.admin)
   @Get('email/:email')
   @ApiOperation({ summary: 'Get a a user by email. Role: Admin' })
@@ -55,7 +57,7 @@ export class UsersController {
     return this.usersService.findOneByEmail(email);
   }
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Roles(Role.admin)
   @Put(':id')
   @ApiOperation({ summary: 'Update user by id. Role: Admin' })
@@ -67,7 +69,7 @@ export class UsersController {
     return this.usersService.update(updateRequest, id);
   }
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Roles(Role.admin)
   @Delete(':id')
   @HttpCode(204)

@@ -18,9 +18,7 @@ import {
 } from '@shitpost-generator/interfaces';
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { LocalAuthGuard } from './auth/local-auth.guard';
-import { Roles } from './auth/roles.decorator';
 import { EnumValidationPipe } from './shared/pipes/enum-validation.pipe';
 
 @Controller()
@@ -33,26 +31,6 @@ export class AppController {
   @Get('hello')
   getData(): IMessage {
     return this.appService.getData();
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('protected')
-  getConfidentialData(): IMessage {
-    return { message: 'confidential data' };
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('user')
-  @Roles(Role.user)
-  getUserData(): IMessage {
-    return { message: 'User data' };
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Roles(Role.admin)
-  @Get('admin')
-  getAdminData(): IMessage {
-    return { message: 'Admin data' };
   }
 
   @UseGuards(LocalAuthGuard)

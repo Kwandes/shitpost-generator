@@ -23,7 +23,6 @@ export class RolesGuard implements CanActivate {
       return true;
     }
     const { headers } = context.switchToHttp().getRequest();
-
     // validate that the request contains the jwt access token
     if (!headers || !headers.authorization) {
       return false;
@@ -40,8 +39,7 @@ export class RolesGuard implements CanActivate {
     }
 
     // fetch a user based on the email and check their role
-    // const user = await this.usersService.findOne(jwt.email);
-    // return requiredRoles.some((role) => user.role?.includes(role));
-    return true;
+    const user = await this.usersService.findOneByEmail(jwt.email);
+    return requiredRoles.some((role) => user.role?.includes(role));
   }
 }

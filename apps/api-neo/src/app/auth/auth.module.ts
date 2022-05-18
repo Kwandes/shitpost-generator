@@ -13,7 +13,6 @@ import { RolesGuard } from './roles.guards';
 
 @Module({
   imports: [
-    // UsersModule,
     PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
