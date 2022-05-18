@@ -38,9 +38,17 @@ export class UsersController {
   @Get(':id')
   @ApiOperation({ summary: 'Get a a user by id. Role: Admin' })
   @ApiOkResponse({ type: User })
-  get(@Param('id', ParseUUIDPipe) id: string): Promise<IUser> {
-    // return this.usersService.findOne(id);
-    return null;
+  getOneById(@Param('id', ParseUUIDPipe) id: string): Promise<IUserNeo> {
+    return this.usersService.findOneById(id);
+  }
+
+  //@UseGuards(JwtAuthGuard)
+  @Roles(Role.admin)
+  @Get('email/:email')
+  @ApiOperation({ summary: 'Get a a user by email. Role: Admin' })
+  @ApiOkResponse({ type: User })
+  getOneByEmail(@Param('email') email: string): Promise<IUserNeo> {
+    return this.usersService.findOneByEmail(email);
   }
 
   // @UseGuards(AuthGuard(['jwt', 'anonymous']))

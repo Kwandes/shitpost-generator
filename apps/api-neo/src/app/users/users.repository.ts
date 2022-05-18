@@ -14,8 +14,12 @@ export class UsersRepository {
   constructor(
     @InjectPersistenceManager()
     readonly persistenceManager: PersistenceManager,
-    @InjectCypher(__dirname, './assets/findAllUsers')
-    readonly findAllCypher: CypherStatement
+    @InjectCypher(__dirname, './assets/users/find-all')
+    readonly findAllCypher: CypherStatement,
+    @InjectCypher(__dirname, './assets/users/find-one-by-id')
+    readonly findOneByIdCypher: CypherStatement,
+    @InjectCypher(__dirname, './assets/users/find-one-by-email')
+    readonly findOneByEmailCypher: CypherStatement
   ) {}
 
   @Transactional()
@@ -23,6 +27,26 @@ export class UsersRepository {
     return this.persistenceManager.query(
       new QuerySpecification<UserNeo>()
         .withStatement(this.findAllCypher)
+        .transform(UserNeo)
+    );
+  }
+
+  @Transactional()
+  async findOneById(id: string): Promise<UserNeo> {
+    return this.persistenceManager.maybeGetOne(
+      new QuerySpecification<UserNeo>()
+        .withStatement(this.findOneByIdCypher)
+        .bind([id])
+        .transform(UserNeo)
+    );
+  }
+
+  @Transactional()
+  async findOneByEmail(email: string): Promise<UserNeo> {
+    return this.persistenceManager.maybeGetOne(
+      new QuerySpecification<UserNeo>()
+        .withStatement(this.findOneByEmailCypher)
+        .bind([email])
         .transform(UserNeo)
     );
   }

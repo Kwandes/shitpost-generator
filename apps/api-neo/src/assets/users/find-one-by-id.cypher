@@ -1,0 +1,1 @@
+MATCH (user:User) WHERE user.userId= $1 return user
