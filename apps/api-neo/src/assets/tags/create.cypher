@@ -1,0 +1,1 @@
+MERGE (tag:Tag {tag: $1, sfw: $2, tagId: randomUUID()})

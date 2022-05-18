@@ -11,5 +11,7 @@ export * from './lib/shitpost-tag.dto';
 export * from './lib/shitpost-tag.interface';
 export * from './lib/shitpost.dto';
 export * from './lib/shitpost.interface';
+export * from './lib/tag-neo.dto';
+export * from './lib/tag-neo.interface';
 export * from './lib/user.dto';
 export * from './lib/user.interface';
