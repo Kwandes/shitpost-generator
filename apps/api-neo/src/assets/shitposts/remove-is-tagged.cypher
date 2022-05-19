@@ -1,0 +1,1 @@
+MATCH (shit: Shitpost {shitpostId: $1})-[r:IS_TAGGED]->() DELETE r

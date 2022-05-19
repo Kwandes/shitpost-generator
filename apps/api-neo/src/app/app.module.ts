@@ -8,6 +8,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { configService } from './config/config.service';
+import { ShitpostsModule } from './shitposts/shitposts.module';
 import { TagsModule } from './tags/tags.module';
 import { UsersModule } from './users/users.module';
 
@@ -25,6 +26,7 @@ import { UsersModule } from './users/users.module';
     }),
     AuthModule,
     UsersModule,
+    ShitpostsModule,
     TagsModule,
   ],
   controllers: [AppController],

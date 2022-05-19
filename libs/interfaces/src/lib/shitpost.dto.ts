@@ -8,7 +8,9 @@ import {
 } from 'class-validator';
 import {
   ICreateShitpostRequestMongo,
+  ICreateShitpostRequestNeo,
   IUpdateShitpostRequstMongo,
+  IUpdateShitpostRequstNeo,
 } from './shitpost.interface';
 
 export class CreateShitpostRequest implements CreateShitpostRequest {
@@ -38,6 +40,21 @@ export class CreateShitpostRequestMongo implements ICreateShitpostRequestMongo {
   sfw!: boolean;
 
   @ApiModelProperty()
+  @IsOptional()
+  tags!: string[];
+}
+export class CreateShitpostRequestNeo implements ICreateShitpostRequestNeo {
+  @ApiModelProperty()
+  @IsString()
+  @IsNotEmpty()
+  text!: string;
+
+  @ApiModelProperty()
+  @IsBoolean()
+  sfw!: boolean;
+
+  @ApiModelProperty()
+  @IsUUID('all', { each: true })
   @IsOptional()
   tags!: string[];
 }
@@ -77,6 +94,26 @@ export class UpdateShitpostRequestMongo implements IUpdateShitpostRequstMongo {
   isEnabled!: boolean;
 
   @ApiModelProperty()
+  @IsOptional()
+  tags?: string[];
+}
+
+export class UpdateShitpostRequestNeo implements IUpdateShitpostRequstNeo {
+  @ApiModelProperty()
+  @IsString()
+  @IsNotEmpty()
+  text!: string;
+
+  @ApiModelProperty()
+  @IsBoolean()
+  sfw!: boolean;
+
+  @ApiModelProperty()
+  @IsBoolean()
+  isEnabled!: boolean;
+
+  @ApiModelProperty()
+  @IsUUID('all', { each: true })
   @IsOptional()
   tags?: string[];
 }
