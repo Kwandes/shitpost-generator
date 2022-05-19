@@ -37,7 +37,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('mongo', app, document);
-  const port = process.env.PORT || 3333;
+  const port = process.env.PORT || 3334;
   await app.listen(port);
   Logger.log(
     `🚀 MongoDb-based backend application is running on: http://localhost:${port}/${globalPrefix}`
