@@ -1,7 +1,8 @@
 import { Gender } from './gender.enum';
 import { IBase } from './interfaces';
 import { INameTag } from './name-tags.interface';
-import { IUser, IUserMongo } from './user.interface';
+import { ITagNeo } from './tag-neo.interface';
+import { IUser, IUserMongo, IUserNeo } from './user.interface';
 
 export interface IName extends IBase {
   nameId: string;
@@ -21,6 +22,14 @@ export interface INameMongo extends IBase {
   tags: string[];
 }
 
+export interface INameNeo {
+  nameId: string;
+  name: string;
+  gender: Gender;
+  isEnabled: boolean;
+  createdBy?: IUserNeo;
+  tags: ITagNeo[];
+}
 export interface ICreateNameRequest {
   name: string;
   gender: Gender;
@@ -29,6 +38,13 @@ export interface ICreateNameRequest {
 }
 
 export interface ICreateNameRequestMongo {
+  name: string;
+  gender: Gender;
+  isEnabled: boolean;
+  tags: string[];
+}
+
+export interface ICreateNameRequestNeo {
   name: string;
   gender: Gender;
   isEnabled: boolean;
@@ -48,8 +64,16 @@ export interface IUpdateNameRequstMongo {
   isEnabled: boolean;
   tags: string[];
 }
+export interface IUpdateNameRequstNeo {
+  name: string;
+  gender: Gender;
+  isEnabled: boolean;
+  tags: string[];
+}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ICreateNameResponse extends IName {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ICreateNameResponseMongo extends INameMongo {}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface ICreateNameResponseNeo extends INameNeo {}

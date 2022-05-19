@@ -1,0 +1,1 @@
+MATCH (name: Name {nameId: $1})-[r:IS_TAGGED]->() DELETE r

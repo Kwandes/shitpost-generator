@@ -11,8 +11,10 @@ import { Gender } from './gender.enum';
 import {
   ICreateNameRequest,
   ICreateNameRequestMongo,
+  ICreateNameRequestNeo,
   IUpdateNameRequst,
   IUpdateNameRequstMongo,
+  IUpdateNameRequstNeo,
 } from './names.interface';
 
 export class CreateNameRequest implements ICreateNameRequest {
@@ -54,6 +56,25 @@ export class CreateNameRequestMongo implements ICreateNameRequestMongo {
   @IsString({ each: true })
   tags!: string[];
 }
+export class CreateNameRequestNeo implements ICreateNameRequestNeo {
+  @ApiModelProperty()
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(80)
+  name!: string;
+
+  @ApiModelProperty({ type: 'enum', enum: Object.keys(Gender) })
+  @IsEnum(Gender)
+  gender!: Gender;
+
+  @ApiModelProperty()
+  @IsBoolean()
+  isEnabled!: boolean;
+
+  @ApiModelProperty()
+  @IsUUID('all', { each: true })
+  tags!: string[];
+}
 
 export class UpdateNameRequest implements IUpdateNameRequst {
   @ApiModelProperty()
@@ -92,5 +113,25 @@ export class UpdateNameRequestMongo implements IUpdateNameRequstMongo {
 
   @ApiModelProperty()
   @IsString({ each: true })
+  tags!: string[];
+}
+
+export class UpdateNameRequestNeo implements IUpdateNameRequstNeo {
+  @ApiModelProperty()
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(80)
+  name!: string;
+
+  @ApiModelProperty({ type: 'enum', enum: Object.keys(Gender) })
+  @IsEnum(Gender)
+  gender!: Gender;
+
+  @ApiModelProperty()
+  @IsBoolean()
+  isEnabled!: boolean;
+
+  @ApiModelProperty()
+  @IsUUID('all', { each: true })
   tags!: string[];
 }
