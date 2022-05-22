@@ -105,8 +105,10 @@ npm run seed
 ```sh
 npm run seed:mysql
 npm run seed:mongo
-npm run seed:neo4j
 ```
+
+Unfortunetely there is currently no option to populate the Neo4j through the seeder service. Instead you can use the [seed-data.cypher](apps\seeder\src\neo\seed-data.cypher) to populate the database manually.\
+WARNING: it will remove other existing nodes and relationships.
 
 5. Serve the apps
 
