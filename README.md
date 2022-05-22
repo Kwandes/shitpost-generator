@@ -131,6 +131,35 @@ nx run-many --maxParallel 4 --parallel true --projects api, api-mongo, api-neo, 
 
 Find out more about how to use NX [here](https://nx.dev/latest/angular/getting-started/nx-cli)
 
+#### Deployment
+
+If you wish, you canbuild the appplications as well and use that for deployment.
+You can either build the apps invidually using the dockerfiles, or use the Docker-compose
+
+MySQL backend:
+
+```sh
+docker build -t shit-api -f .deploy/dockerfiles/MYSQL_API_Dockerfile .
+docker run --name shit-api -e MYSQL_HOST=localhost -e MYSQL_PORT=3306 -e MYSQL_USER=root -e MYSQL_PASSWORD=root -e MYSQL_DATABASE=shitpost_generator  -p 3333:3333 shit-api
+
+```
+
+MongoDb backend:
+
+```sh
+docker build -t shit-api-mongo -f .deploy/dockerfiles/MONGO_API_Dockerfile .
+docker run --name shit-api-mongo -e MONGO_HOST=localhost -e MONGO_PORT=27017 -e MONGO_USER=root -e MONGO_PASSWORD=root -e MONGO_DATABASE=shitpost_generator  -p 3334:3334 shit-api-mongo
+
+```
+
+Neo4j backend:
+
+```sh
+docker build -t shit-api-neo -f .deploy/dockerfiles/NEO_API_Dockerfile .
+docker run --name shit-api-neo -e NEO4J_HOST=localhost -e NEO4j_PORT=7687 -e NEO4j_USER=neo4j -e NEO4j_PASSWORD=root -e NEO4j_DATABASE=shitpost_generator  -p 3335:3335 shit-api-neo
+
+```
+
 #### Documentation
 
 The API is documented using SwaggerUi, which you can access by runnign the api and navigating to [localhost:3333/api](http://localhost:3333/api)
