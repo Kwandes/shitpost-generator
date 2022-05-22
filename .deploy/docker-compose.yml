@@ -1,0 +1,28 @@
+# This file has to be executed with docker-compose up
+
+version: '3.8'
+
+services:
+
+  shitpost-api:
+    image: kwandes/shitpost-generator:api
+    env_file: .env
+    networks:
+      - shitpost
+
+  shitpost-api-mongo:
+    image: kwandes/shitpost-generator:api-mongo
+    env_file: .env
+    networks:
+      - shitpost
+
+  shitpost-api-neo:
+    image: kwandes/shitpost-generator:api-neo
+    env_file: .env
+    networks:
+      - shitpost
+
+
+networks:
+  shitpost:
+    name: shitpost
