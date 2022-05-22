@@ -1,0 +1,14 @@
+FROM node:16-alpine AS builder
+
+WORKDIR /app/builder
+COPY . .
+RUN npm install
+COPY . .
+RUN npx nx build api-mongo
+
+FROM node:16
+
+WORKDIR /app
+COPY --from=builder /app/builder ./
+
+CMD ["node", "./dist/apps/api-mongo/main.js"]
