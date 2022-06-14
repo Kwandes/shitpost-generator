@@ -35,6 +35,7 @@ class ConfigService {
       type: 'mongodb',
       synchronize: false,
       useUnifiedTopology: true, // Current Server Discovery and Monitoring engine current version is deprecated, setting this to true uses the new stuff
+      useNewUrlParser: true,
 
       authSource: 'admin', //  extra step needed to mongoDb
       host: this.getValue('MONGO_HOST', false) || 'localhost',
@@ -42,6 +43,7 @@ class ConfigService {
       username: this.getValue('MONGO_USER', false) || 'root',
       password: this.getValue('MONGO_PASSWORD', false) || 'root',
       database: this.getValue('MONGO_DATABASE', false) || 'shitpost_generator',
+      ssl: this.getValue('MONGO_SLL', false) === 'true' || false,
 
       entities: [UserMongo, ShitpostMongo, NameMongo],
     };
